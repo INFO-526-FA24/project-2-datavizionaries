@@ -1,0 +1,45 @@
+---
+title: "TBD"
+subtitle: ""
+author: 
+  - name: "Team Data Vizionaries"
+    affiliations:
+      - name: "College of Information Science, University of Arizona"
+description: "Project 2 for the course INFO-526 instructed by Prof. Anna Leach"
+format:
+  html:
+    code-tools: true
+    code-overflow: wrap
+    code-line-numbers: false
+    embed-resources: true
+editor: visual
+code-annotations: hover
+execute:
+  warning: false
+---
+
+## Dataset Description
+
+::: {style="text-align: justify;"}
+TBD
+:::
+
+## Reasons for choosing the dataset
+
+::: {style="text-align: justify;"}
+TBD
+:::
+
+## Questions
+
+TBD
+
+## Analysis plan
+
+::: {style="text-align: justify;"}
+TBD
+:::
+
+## Weekly Plan
+
+TBD
