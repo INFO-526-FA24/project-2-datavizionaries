@@ -37,37 +37,38 @@ library(skimr)
 ```
 
 ::: {style="text-align: justify;"}
-This project uses the ‘Olympic Medals’ dataset sourced from <a href="https://www.kaggle.com/datasets/heesoo37/120-years-of-olympic-history-athletes-and-results/" target="_blank">RGriffin’s Kaggle dataset: 120 years of Olympic history: athletes and results</a>. It is a historical dataset containing bio data on athletes and medal results from Athens 1896 to Rio 2016 and spans over 120 years of Olympic history. The original owner of the dataset, <a href="https://www.randigriffin.com/">Randi H Griffin</a>, scraped the data from the <a href="www.sports-reference.com">Sports-Reference</a> website using the code linked <a href="https://github.com/rgriff23/Olympic_history/tree/master/R">here</a>.
+This project uses the ‘Mental Health Dataset’ sourced from Kaggle. It was prepared by Mr Bhavik Jikdara by extracting the required information from https://ourworldindata.org/mental-health. The dataset contains a variety of features related to text analysis, psychological indicators, stress, isolation and behavioral attributes making it suitable to visualize and get insights into mental health.
 
-</br>The dataset contains 15 columns. The numerical columns: id, age, height, weight and year are represented by the numerical data type in R. The categorical columns: name, sex, team, noc, games, season, city, sport, event and medal are represented by the character data type in R. The dataset has 15 variables and 271116 entries indicating that it has a dimension of 271116 x 15. The description of the columns is as follows:
+The dataset has a total of 17 columns: 1 datetime and 16 categorical variables. The categorical columns: Gender, Country, Occupation, self_employed, family_history, treatment, Days_Indoors, Growing_Stress, Changes_Habits, Mental_Health_History, Mood_Swings, Coping_Struggles, Work_Interest, Social_Weakness, mental_health_interview, care_options and the datetime column: Timestamp are both represented by the character data type in R. The dataset has 292364 entries and 17 columns indicating it has a dimension of 292364 x 17. The description of the columns is as follows:
 :::
 
-| **Column Name** | **Class** | **Description**                            |
-|-----------------|-----------|--------------------------------------------|
-| id              | double    | Unique ID for each athlete                 |
-| name            | character | Name of the athlete                        |
-| sex             | character | Sex of the athlete(M or F)                 |
-| age             | double    | Age of the athlete                         |
-| height          | double    | Height of the athlete in cm                |
-| weight          | double    | Weight of the athlete in kg                |
-| team            | character | Team name                                  |
-| noc             | character | National Olympic Committee (3-letter code) |
-| games           | character | Olympic game year and season               |
-| year            | double    | Year of olympics                           |
-| season          | character | Season(Winter or Summer)                   |
-| city            | character | City in which olympics is hosted           |
-| sport           | character | Name of the sport                          |
-| event           | character | Name of the event                          |
-| medal           | character | Gold, Silver, Bronze, NA                   |
+| **Column Name** | **Class** | **Description** |
+|----------------|----------------|-----------------------------------------|
+| Timestamp | character(datetime) | The timestamp at which an observation was recorded |
+| Gender | character | Gender of the person(Male or Female) |
+| Country | character | Country to which the person belongs to |
+| Occupation | character | The occupation of the person |
+| self_employed | character | Indicates whether the person works from themselves, has their own business(Yes or No) |
+| family_history | character | History of mental health issues among family members(Yes or No) |
+| treatment | character | Indicates whether a person is taking treatment for mental health issues. (Yes or No) |
+| Days_Indoor | character |  |
+| Growing_Stress | character | Indicates whether a person's stress level is increasing over time. (Yes or No) |
+| Changes_Habits | character | It refers to changes in behavior or habits that may indicate shifts in mental health. |
+| Mental_Health_History | character | Person’s mental health history |
+| Mood_Swings | character | Fluctuations in a person's mood |
+| Coping_Struggles | character | Difficulties a person may have in coping with mental health challenges. |
+| Work_Interest | character | Indicates whether interested in doing work or not |
+| Social_Weakness | character | Indicates difficulties in social interactions or relationships |
+| mental_health_interview | character | Indicates whether the person would bring up the issue of mental health with potential employer in an interview |
+| care_options | character | Indicates whether options are available for treatment of mental health issues, such as therapy, medication, or support groups. |
 
 : **Data Dictionary**
 
 ```{r}
 
-olympics <- read_csv(
-  'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-08-06/olympics.csv'
-  )
-skim(olympics)
+dataset <- read.csv("data/mental_health.csv")
+
+colnames(dataset)
 ```
 
 ## Reasons for choosing the dataset
@@ -94,11 +95,11 @@ Q2. Which countries have historically won the most medals in the Olympics, and h
 
 ## Analysis plan
 
-<div style="text-align: justify;">
+::: {style="text-align: justify;"}
 Question 1: The season, medal and year variables of the dataset will be used to answer this question. A line plot will be used to visualize and explain the trends in Olympic medal count across the years for each season since it clearly illustrates the patterns. In addition to the line plot, a bar plot faceted by the season variable will be used to display the distribution of medals and look out for the reasons that resulted in discontinuities.
 
 Question 2: We plan to use the team, noc, medal and sport variables from the dataset for visualizing the distribution. A choropleth map will be used to visually represent the number of medals won by each country and a bar chart will be used to identify and showcase the top performing countries. Moreover, an animated plot(GIF) will be used to display and track the medal distributions across years for both Summer and Winter Olympics.
-</div>
+:::
 
 ## Weekly Plan
 
