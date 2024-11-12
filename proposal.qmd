@@ -37,13 +37,13 @@ library(skimr)
 ```
 
 ::: {style="text-align: justify;"}
-This project uses the ‘Mental Health Dataset’ sourced from Kaggle. It was prepared by Mr Bhavik Jikdara by extracting the required information from https://ourworldindata.org/mental-health. The dataset contains a variety of features related to text analysis, psychological indicators, stress, isolation and behavioral attributes making it suitable to visualize and get insights into mental health.
+This project uses the ‘Mental Health Dataset’ sourced from Kaggle. It was prepared by Mr Bhavik Jikdara by extracting the required information from `<a href="`{=html}https://ourworldindata.org/mental-health/`" target="_blank">`{=html}Our World in Data</a> . The dataset contains a variety of features related to text analysis, psychological indicators, stress, isolation and behavioral attributes making it suitable to visualize and get insights into mental health.
 
 The dataset has a total of 17 columns: 1 datetime and 16 categorical variables. The categorical columns: Gender, Country, Occupation, self_employed, family_history, treatment, Days_Indoors, Growing_Stress, Changes_Habits, Mental_Health_History, Mood_Swings, Coping_Struggles, Work_Interest, Social_Weakness, mental_health_interview, care_options and the datetime column: Timestamp are both represented by the character data type in R. The dataset has 292364 entries and 17 columns indicating it has a dimension of 292364 x 17. The description of the columns is as follows:
 :::
 
 | **Column Name** | **Class** | **Description** |
-|----------------|----------------|-----------------------------------------|
+|-----------------|-----------------|--------------------------------------|
 | Timestamp | character(datetime) | The timestamp at which an observation was recorded |
 | Gender | character | Gender of the person(Male or Female) |
 | Country | character | Country to which the person belongs to |
