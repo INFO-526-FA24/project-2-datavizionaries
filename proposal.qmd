@@ -1,45 +1,31 @@
 ---
-title: "TBD"
-subtitle: ""
-author: 
-  - name: "Team Data Vizionaries"
-    affiliations:
-      - name: "College of Information Science, University of Arizona"
-description: "Project 2 for the course INFO-526 instructed by Prof. Anna Leach"
-format:
-  html:
-    code-tools: true
-    code-overflow: wrap
-    code-line-numbers: false
-    embed-resources: true
+title: "Proposal title"
+subtitle: "Proposal"
+format: html
 editor: visual
-code-annotations: hover
-execute:
-  warning: false
 ---
 
-## Dataset Description
+```{r}
+#| label: load-pkgs
+#| message: false
+library(tidyverse)
+```
 
-::: {style="text-align: justify;"}
-TBD
-:::
+## Dataset
 
-## Reasons for choosing the dataset
+```{r}
+#| label: load-dataset
+#| message: false
+```
 
-::: {style="text-align: justify;"}
-TBD
-:::
+A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.
+
+Make sure to load the data and use inline code for some of this information.
 
 ## Questions
 
-TBD
+The two questions you want to answer.
 
 ## Analysis plan
 
-::: {style="text-align: justify;"}
-TBD
-:::
-
-## Weekly Plan
-
-TBD
+-   A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any).
