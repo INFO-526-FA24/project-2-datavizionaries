@@ -1,5 +1,5 @@
 ---
-title: "Mental Health Dataset"
+title: "MindScope: Unveiling Patterns in Mental Health through Data-Driven Insights"
 subtitle: ""
 author: 
   - name: "Team Data Vizionaries"
