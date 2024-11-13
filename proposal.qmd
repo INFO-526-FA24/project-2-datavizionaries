@@ -5,7 +5,7 @@ author:
   - name: "Team Data Vizionaries"
     affiliations:
       - name: "College of Information Science, University of Arizona"
-description: "This is project-2 in the INFO-526 course by Dr Anna Leach"
+description: "Project 2 for INFO 526 course instructed by Prof. Anna Leach"
 format:
   html:
     code-tools: true
@@ -37,7 +37,7 @@ colnames(dataset)
 ```
 
 | **Column Name** | **Class** | **Description** |
-|------------------|------------------|-------------------------------------|
+|------------------|------------------|------------------------------------|
 | Timestamp | character(datetime) | The timestamp at which an observation was recorded |
 | Gender | character | Gender of the person(Male or Female) |
 | Country | character | Country to which the person belongs to |
@@ -56,19 +56,23 @@ colnames(dataset)
 | mental_health_interview | character | Indicates whether the person would bring up the issue of mental health with potential employer in an interview |
 | care_options | character | Indicates whether options are available for treatment of mental health issues, such as therapy, medication, or support groups. |
 
-: **Data Dictionary**
-
 ## Reasons for choosing the dataset
 
-Fill it
+Mental health is a topic of increasing importance. The U.S. Department of Health and Human Services refers to mental health as a person's "emotional, psychological and social well-being." A person with good mental health has a positive outlook, can accomplish daily tasks, maintain relationships, and engage in meaningful recreation. On the other hand, severe mental health issues can affect life's essential aspects, and any unexpected event can cause a cascade of adverse effects.
+
+This dataset has values we believe to be critical in determining a person's mental state. For example, someone working in a corporate job in the United States might be happy or have a positive mental state, but someone working at the same post in Brazil might not.
+
+Personal factors such as days spent indoors and whether or not having a support system around also make a huge difference.
 
 ## Goal of the project
 
-Fill it
+By analyzing this dataset, we hope to discover correlations and patterns between various aspects of one's life. These insights can be used to develop policies and support systems promoting mental well-being.
 
 ## Questions
 
-Fill it
+1.  What patterns exist in self-employment status and coping struggles, social weakness, and work interest? Does mental health history (self and family) correlate with higher levels of mood swings, coping struggles, and social weakness?
+
+2.  Are there trends in the dataset over time (based on Timestamp), such as increasing stress levels or changes in treatment-seeking behaviors?
 
 ## Analysis plan
 
@@ -79,12 +83,10 @@ Fill it
 |  |  |  |  |  |  |  |
 |-----------|-----------|-----------|-----------|-----------|-----------|-----------|
 | Sr No | Task Name | Status | Assignee | Due | Priority | Summary |
-| 1 | Project proposal |  |  |  |  |  |
-| 2 | Review feedback and prepare presentation |  |  |  |  |  |
-| 3 | Question 1 - Problem statement and code |  |  |  |  |  |
-| 4 | Question 2 - Problem statement and code |  |  |  |  |  |
-| 5 | Question 1 - Review |  |  |  |  |  |
-| 6 | Question 2 - Review |  |  |  |  |  |
-| 7 | Final code changes and write up |  |  |  |  |  |
-
-: **Work Schedule**
+| 1 | Project proposal | In Progress | Himanshu | 2024/11/13 | 1 | Prepare project proposal highlighting questions to be answered. |
+| 2 | Review feedback and prepare presentation | Pending | Kapil | 2024/12/13 | 5 |  |
+| 3 | Question 1 - Problem statement and code | Awaiting review | Maksim, Abhay | 2024/11/27 | 3 |  |
+| 4 | Question 2 - Problem statement and code | Awaiting review | Kapil, Himanshu | 2024/11/27 | 3 |  |
+| 5 | Question 1 - Review | Awaiting review | Kapil, Himanshu | 2024/11/27 | 4 |  |
+| 6 | Question 2 - Review | Awaiting review | Maksim, Abhay | 2024/11/27 | 4 |  |
+| 7 | Final code changes and write up | Awaiting review | Maksim, Abhay, Kapil, Himanshu | 2024/11/28 | 2 |  |

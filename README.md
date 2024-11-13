@@ -9,3 +9,8 @@ This project was developed for the course INFO 526 Data Analysis and Visualizati
 3. Abhay Nandiraju
 4. Maksim Kulik
 
+# Project Description
+
+This project uses the ‘Mental Health Dataset’ sourced from Kaggle. It was prepared by Mr Bhavik Jikdara by extracting the required information from `<a href="`{=html}https://ourworldindata.org/mental-health/`" target="_blank">`{=html}Our World in Data</a> . The dataset contains a variety of features related to text analysis, psychological indicators, stress, isolation and behavioral attributes making it suitable to visualize and get insights into mental health.
+
+The goal is to discover correlations and patterns between various aspects of one's life. These insights can be used to develop policies and support systems promoting mental well-being.
