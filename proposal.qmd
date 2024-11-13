@@ -1,11 +1,11 @@
 ---
-title: "TBD"
+title: "Mental Health Dataset"
 subtitle: ""
 author: 
   - name: "Team Data Vizionaries"
     affiliations:
       - name: "College of Information Science, University of Arizona"
-description: "Project 2 for the course INFO-526 instructed by Prof. Anna Leach"
+description: "Project 2 for INFO 526 course instructed by Prof. Anna Leach"
 format:
   html:
     code-tools: true
@@ -20,26 +20,73 @@ execute:
 
 ## Dataset Description
 
+```{r}
+#| label: load-dataset
+#| message: false
+```
+
 ::: {style="text-align: justify;"}
-TBD
+This project uses the ‘Mental Health Dataset’ sourced from Kaggle. It was prepared by Mr Bhavik Jikdara by extracting the required information from `<a href="`{=html}https://ourworldindata.org/mental-health/`" target="_blank">`{=html}Our World in Data</a> . The dataset contains a variety of features related to text analysis, psychological indicators, stress, isolation and behavioral attributes making it suitable to visualize and get insights into mental health.
+
+The dataset has a total of 17 columns: 1 datetime and 16 categorical variables. The categorical columns: Gender, Country, Occupation, self_employed, family_history, treatment, Days_Indoors, Growing_Stress, Changes_Habits, Mental_Health_History, Mood_Swings, Coping_Struggles, Work_Interest, Social_Weakness, mental_health_interview, care_options and the datetime column: Timestamp are both represented by the character data type in R. The dataset has 292364 entries and 17 columns indicating it has a dimension of 292364 x 17. The description of the columns is as follows:
 :::
+
+```{r}
+dataset <- read.csv("data/mental_health.csv")
+colnames(dataset)
+```
+
+| **Column Name** | **Class** | **Description** |
+|------------------|------------------|------------------------------------|
+| Timestamp | character(datetime) | The timestamp at which an observation was recorded |
+| Gender | character | Gender of the person(Male or Female) |
+| Country | character | Country to which the person belongs to |
+| Occupation | character | The occupation of the person |
+| self_employed | character | Indicates whether the person works from themselves, has their own business(Yes or No) |
+| family_history | character | History of mental health issues among family members(Yes or No) |
+| treatment | character | Indicates whether a person is taking treatment for mental health issues. (Yes or No) |
+| Days_Indoor | character |  |
+| Growing_Stress | character | Indicates whether a person's stress level is increasing over time. (Yes or No) |
+| Changes_Habits | character | It refers to changes in behavior or habits that may indicate shifts in mental health. |
+| Mental_Health_History | character | Person’s mental health history |
+| Mood_Swings | character | Fluctuations in a person's mood |
+| Coping_Struggles | character | Difficulties a person may have in coping with mental health challenges. |
+| Work_Interest | character | Indicates whether interested in doing work or not |
+| Social_Weakness | character | Indicates difficulties in social interactions or relationships |
+| mental_health_interview | character | Indicates whether the person would bring up the issue of mental health with potential employer in an interview |
+| care_options | character | Indicates whether options are available for treatment of mental health issues, such as therapy, medication, or support groups. |
 
 ## Reasons for choosing the dataset
 
-::: {style="text-align: justify;"}
-TBD
-:::
+Mental health is a topic of increasing importance. The U.S. Department of Health and Human Services refers to mental health as a person's "emotional, psychological and social well-being." A person with good mental health has a positive outlook, can accomplish daily tasks, maintain relationships, and engage in meaningful recreation. On the other hand, severe mental health issues can affect life's essential aspects, and any unexpected event can cause a cascade of adverse effects.
+
+This dataset has values we believe to be critical in determining a person's mental state. For example, someone working in a corporate job in the United States might be happy or have a positive mental state, but someone working at the same post in Brazil might not.
+
+Personal factors such as days spent indoors and whether or not having a support system around also make a huge difference.
+
+## Goal of the project
+
+By analyzing this dataset, we hope to discover correlations and patterns between various aspects of one's life. These insights can be used to develop policies and support systems promoting mental well-being.
 
 ## Questions
 
-TBD
+1.  What patterns exist in self-employment status and coping struggles, social weakness, and work interest? Does mental health history (self and family) correlate with higher levels of mood swings, coping struggles, and social weakness?
+
+2.  Are there trends in the dataset over time (based on Timestamp), such as increasing stress levels or changes in treatment-seeking behaviors?
 
 ## Analysis plan
 
-::: {style="text-align: justify;"}
-TBD
-:::
+Fill it
 
 ## Weekly Plan
 
-TBD
+|  |  |  |  |  |  |  |
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| Sr No | Task Name | Status | Assignee | Due | Priority | Summary |
+| 1 | Project proposal | In Progress | Himanshu | 2024/11/13 | 1 | Prepare project proposal highlighting questions to be answered. |
+| 2 | Review feedback and prepare presentation | Pending | Kapil | 2024/12/13 | 5 |  |
+| 3 | Question 1 - Problem statement and code | Awaiting review | Maksim, Abhay | 2024/11/27 | 3 |  |
+| 4 | Question 2 - Problem statement and code | Awaiting review | Kapil, Himanshu | 2024/11/27 | 3 |  |
+| 5 | Question 1 - Review | Awaiting review | Kapil, Himanshu | 2024/11/27 | 4 |  |
+| 6 | Question 2 - Review | Awaiting review | Maksim, Abhay | 2024/11/27 | 4 |  |
+| 7 | Final code changes and write up | Awaiting review | Maksim, Abhay, Kapil, Himanshu | 2024/11/28 | 2 |  |
