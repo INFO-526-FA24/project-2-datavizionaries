@@ -100,7 +100,7 @@ By analyzing this dataset, we hope to discover correlations and patterns between
 
     -   Convert the categorical variables into factors (e.g., `Coping_Struggles`, `Social_Weakness`, `Work_Interest`, `Occupation`, `self_employed`).
 
-    -   Handle missing values (if any) by either imputing or removing rows.
+    -   Handle missing values (if any). We plan to handle the missing values depending on the percentage of missing data per feature. For features with a small percentage of missing values (\<5%), we could use imputation using the mean or median. For a moderate amount of NAs (5-30%), we will try more sophisticated methods like k-nearest neighbors (KNN) imputation or regression imputation. For features with a high percentage of missing values (\>30%), we will assess their importance to the analysis and consider dropping them if they are non-essential.
 
 2.  **Exploratory Data Analysis (EDA)**:
 
