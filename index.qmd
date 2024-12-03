@@ -6,6 +6,129 @@ format: html
 editor: visual
 ---
 
+```{r}
+#| label: load-packages
+#| include: false
+
+pacman::p_load(tidymodels, dplyr, readr, tidyverse, here,
+               readxl, ggplot2, ggimage, GGally, viridis, reshape2)
+
+```
+
 ## Abstract
 
-Add project abstract here.
+We explore global mental health. There is never too much awareness on a vital topic like this.
+
+## Loading data
+
+```{r}
+#| label: load-data
+#| include: false
+
+data <- read.csv("data/mental_health.csv")
+
+encode_ordinal <- function(x, order = unique(x)) {
+  x <- as.numeric(factor(x, levels = order, exclude = NULL))
+  x
+}
+
+data$Mood_Swings <- encode_ordinal(data$Mood_Swings, order = c("Low", "Medium", "High"))
+data$Coping_Struggles <- encode_ordinal(data$Coping_Struggles, order = c("No", "Maybe", "Yes"))
+data$Social_Weakness <- encode_ordinal(data$Social_Weakness, order = c("No", "Maybe", "Yes"))
+data$Work_Interest <- encode_ordinal(data$Work_Interest, order = c("No", "Maybe", "Yes"))
+
+summary_data <- select(data, Mood_Swings, Gender, family_history) %>%
+  group_by(Gender, family_history)
+head(summary_data)
+```
+
+## Question 1
+
+### How family history affect mental health
+Does a person's or their family's history of mental health problems link with higher levels of mood swings, coping challenges and social fragility?
+
+```{r}
+#| label: random-data
+#| include: false
+
+# random data for testing, to be removed
+set.seed(1)
+random_data <- data.frame(
+  Mood_Swings = sample(1:3, 100, replace = TRUE),
+  Gender = sample(c("Female", "Male"), 100, replace = TRUE),
+  family_history = sample(c("Yes", "No"), 100, replace = TRUE))
+```
+
+```{r}
+summary_data <- select(data, Mood_Swings, Gender, family_history) %>%
+  group_by(Gender, family_history) %>%
+  summarise(Average_Mood_Swings = mean(Mood_Swings), .groups = "drop")
+
+ggplot(summary_data, aes(x = Gender, y = Average_Mood_Swings, fill = family_history)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "Average Mood Swings by Gender and Family History",
+    x = "Gender",
+    y = "Average Mood Swings",
+    fill = "Family History"
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
+#| label: q1-1
+#| include: false
+
+summary_data <- data %>%
+  group_by(Gender, family_history) %>%
+  summarise(Average_Coping_Struggles = mean(Coping_Struggles), .groups = "drop")
+
+ggplot(summary_data, aes(x = Gender, y = Average_Coping_Struggles, fill = family_history)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "Average Mood Swings by Gender and Family History",
+    x = "Gender",
+    y = "Average Mood Swings",
+    fill = "Family History"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: q1-2
+#| include: false
+
+summary_data <- data %>%
+  group_by(Gender, family_history) %>%
+  summarise(Average_Social_Weakness = mean(Social_Weakness), .groups = "drop")
+
+ggplot(summary_data, aes(x = Gender, y = Average_Social_Weakness, fill = family_history)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "Average Mood Swings by Gender and Family History",
+    x = "Gender",
+    y = "Average Mood Swings",
+    fill = "Family History"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: q1-3
+#| include: false
+
+summary_data <- data %>%
+  group_by(Gender, family_history) %>%
+  summarise(Average_Work_Interest = mean(Work_Interest), .groups = "drop")
+
+ggplot(summary_data, aes(x = Gender, y = Average_Work_Interest, fill = family_history)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "Average Mood Swings by Gender and Family History",
+    x = "Gender",
+    y = "Average Mood Swings",
+    fill = "Family History"
+  ) +
+  theme_minimal()
+```
