@@ -124,3 +124,7 @@ print(cor_plot)
 ggsave("./images/selected_correlations.png", cor_plot, 
        width = 8, height = 6, dpi = 500)
 ```
+
+<p style="text-align:justify">
+  The image shows a correlation matrix heatmap between the four mental-health related variables: coping_struggles, social_weakness, work_interest and self_employed. The matrix uses a color schema ranging from yellow(1.0) to teal(0). Looking at the specific correlations, we can observe that each variable has perfect positive correlation(1.00) with itself, shown in yellow along the diagonal. However, the relationship between different variables is significantly weak or non-existent with values very close to zero. For instance, work_interest and social_weakness show a very slight negative correlation of -0.05, while coping_struggles and social_weakness have a minimal positive correlation of 0.01. The variable self-employed shows no correlation with any other factors. These observations indicate that these mental health factors are independent of each other.
+</p>
