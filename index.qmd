@@ -83,7 +83,7 @@ mood_swings <- ggplot(summary_data, aes(x = Gender, y = Average_Mood_Swings, fil
   labs(
     title = "Mood Swings",
     x = "Gender",
-    y = "Average Mood Swings",
+    y = "Mood Swings",
     fill = "Family History"
   ) +
   theme_minimal()
@@ -104,7 +104,7 @@ coping_struggles <- ggplot(summary_data, aes(x = Gender, y = Average_Coping_Stru
   labs(
     title = "Coping Struggles",
     x = "Gender",
-    y = "Average Mood Swings",
+    y = "Coping Struggles",
     fill = "Family History"
   ) +
   theme_minimal()
@@ -124,7 +124,7 @@ social_weakness <- ggplot(summary_data, aes(x = Gender, y = Average_Social_Weakn
   labs(
     title = "Social Weakness",
     x = "Gender",
-    y = "Average Mood Swings",
+    y = "Social Weakness",
     fill = "Family History"
   ) +
   theme_minimal()
@@ -144,7 +144,7 @@ work_interest <- ggplot(summary_data, aes(x = Gender, y = Average_Work_Interest,
   labs(
     title = "Work Interest",
     x = "Gender",
-    y = "Average Mood Swings",
+    y = "Work Interest",
     fill = "Family History"
   ) +
   theme_minimal()
@@ -158,3 +158,9 @@ work_interest <- ggplot(summary_data, aes(x = Gender, y = Average_Work_Interest,
 combined_plot <- (mood_swings + coping_struggles) / (work_interest + social_weakness)
 print(combined_plot)
 ```
+
+```{r}
+#| label: q1-4
+#| include: true
+
+ggsave("combined_plot.png", dpi=500)
