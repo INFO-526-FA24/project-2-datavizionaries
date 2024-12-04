@@ -1,11 +1,27 @@
 ---
-title: "Project title"
-subtitle: "INFO 526 - Project 1"
-author: "Team name"
-format: html
+title: "MindScope: Unveiling Patterns in Mental Health through Data-Driven Insights"
+subtitle: ""
+author: 
+  - name: "Team Data Vizionaries"
+    affiliations:
+      - name: "College of Information Science, University of Arizona"
+description: "Project 2 for INFO 526 course instructed by Prof. Anna Leach"
+format:
+  html:
+    code-tools: true
+    code-overflow: wrap
+    code-line-numbers: false
+    embed-resources: true
 editor: visual
+code-annotations: hover
+execute:
+  warning: false
 ---
 
 ## Abstract
 
-Add project abstract here.
+## Introduction
+
+## Question 1
+
+### Part 1 : What correlations exist between coping difficulties, social weakness, and work interest in occupation and self-employment status?
