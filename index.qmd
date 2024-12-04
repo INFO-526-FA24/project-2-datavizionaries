@@ -33,7 +33,7 @@ execute:
 ```{r}
 # List of required packages
 required_packages <- c("tidyverse", "skimr", "readr", "dplyr", "countrycode", "patchwork", 
-                       "ggplot2", "ggiraph", "sf", "gganimate", "gridExtra","transformr","corrplot","tidyr")
+                       "ggplot2", "ggiraph", "sf", "gganimate", "gridExtra","transformr","corrplot","tidyr","reshape2")
 
 # Function to check if a package is installed; if not, install it
 install_if_missing <- function(pkg) {
@@ -59,67 +59,68 @@ load_packages(required_packages)
 ```
 
 ```{r}
+
 # Load required libraries
 library(dplyr)
-library(corrplot)
-library(tidyr)
+library(readr)
+library(ggplot2)
+library(reshape2)
+library(viridis)
 
-# reading the data
-data_path = "./data/mental_health.csv"
-df <- read_csv(file=data_path)
-names(df) <- tolower(names(df)) # convert column names to lowercase
-names(df) <- gsub(" ","_", names(df)) # replacing space with underscores
-df
+# Read the data
+df <- read_csv("./data/mental_health.csv")
 
-# adding factor levels to relevant columns
-df_analysis <- data.frame(
-  coping_struggles = factor(df$coping_struggles, levels = c("No", "Yes")),
-  social_weakness = factor(df$social_weakness, levels = c("No", "Maybe", "Yes")),
-  work_interest = factor(df$work_interest, levels = c("No", "Yes")),
-  occupation = df$occupation,
-  self_employed = df$self_employed
-)
+# Convert column names to lowercase and replace spaces with underscores
+names(df) <- tolower(names(df))
+names(df) <- gsub(" ","_", names(df))
 
-# converting factors to numeric to find correlation
-df_numeric <- data.frame(
+# Create a smaller dataframe with just the four variables of interest
+df_selected <- data.frame(
   coping_struggles = ifelse(df$coping_struggles == "Yes", 1, 0),
   social_weakness = case_when(
     df$social_weakness == "Yes" ~ 2,
     df$social_weakness == "Maybe" ~ 1,
-    df$social_weakness == "No" ~ 0),
-  work_interest = ifelse(df$work_interest == "Yes", 1, 0)
+    df$social_weakness == "No" ~ 0
+  ),
+  work_interest = ifelse(df$work_interest == "Yes", 1, 0),
+  self_employed = ifelse(df$self_employed == "Yes", 1, 0)
 )
 
-# correlation matrix
-cor_matrix <- cor(df_numeric, use="complete.obs")
+# Calculate correlation matrix
+cor_matrix <- cor(df_selected, use = "complete.obs")
 
-# correlation plot
+# Melt the correlation matrix for ggplot
+cor_melted <- reshape2::melt(cor_matrix)
 
-corrplot(cor_matrix, method = "color", type = "upper", 
-         addCoef.col = "black", tl.col = "black",
-         title = "Correlation between Mental Health Factors")
+# Create correlation plot
+cor_plot <- ggplot(cor_melted, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile() +
+  geom_text(aes(label = sprintf("%.2f", value)), 
+            #color = ifelse(abs(cor_melted$value) > 0.5, "white", "black"), 
+            size = 4) +
+  scale_fill_viridis(
+    option = "viridis",
+    limits = c(-1, 1),
+    name = "Correlation"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    axis.text.y = element_text(size = 10),
+    axis.title = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    plot.title = element_text(hjust = 0.5, size = 14)
+  ) +
+  ggtitle("Correlation Matrix of Mental Health Factors") +
+  coord_fixed()
 
-# Analysis by occupation and self-employment
-summary_stats <- df %>%
-  group_by(occupation, self_employed) %>%
-  summarise(n = n(),
-            coping_yes = mean(coping_struggles == "Yes", na.rm = TRUE),
-            social_weakness_high = mean(social_weakness %in% c("Yes", "Maybe"),
-                                        na.rm = TRUE),
-            work_interest_yes = mean(work_interest == "Yes", na.rm = TRUE),
-            .groups = 'drop'
-            )
+# Display the plot
+print(cor_plot)
 
-# Print summary statistics
-cat("\nSummary Statistics by Occupation and Self-Employment Status:\n")
-print(summary_stats)
-
-# Additional analysis
-cat("\nDistributions:\n")
-cat("\nCoping Struggles:\n")
-print(table(df$coping_struggles))
-cat("\nSocial Weakness:\n")
-print(table(df$social_weakness))
-cat("\nWork Interest:\n")
-print(table(df$work_interest))
+# Save the plot
+ggsave("./images/selected_correlations.png", cor_plot, 
+       width = 8, height = 6, dpi = 500)
 ```
