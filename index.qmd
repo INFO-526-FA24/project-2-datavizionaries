@@ -20,8 +20,106 @@ execute:
 
 ## Abstract
 
-## Introduction
+## Dataset Introduction
 
-## Question 1
+## Question 1: 
 
 ### Part 1 : What correlations exist between coping difficulties, social weakness, and work interest in occupation and self-employment status?
+
+## Approach:
+
+## Analysis:
+
+```{r}
+# List of required packages
+required_packages <- c("tidyverse", "skimr", "readr", "dplyr", "countrycode", "patchwork", 
+                       "ggplot2", "ggiraph", "sf", "gganimate", "gridExtra","transformr","corrplot","tidyr")
+
+# Function to check if a package is installed; if not, install it
+install_if_missing <- function(pkg) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    message(paste("Installing package:", pkg))
+    install.packages(pkg, dependencies = TRUE)
+  } else {
+    message(paste("Package", pkg, "is already installed"))
+  }
+}
+
+# Apply the function to each package
+invisible(lapply(required_packages, install_if_missing))
+
+# Function to load all the required packages
+load_packages <- function(pkg_list) {
+  invisible(lapply(pkg_list, function(pkg) {
+    library(pkg, character.only = TRUE)
+  }))
+}
+
+load_packages(required_packages)
+```
+
+```{r}
+# Load required libraries
+library(dplyr)
+library(corrplot)
+library(tidyr)
+
+# reading the data
+data_path = "./data/mental_health.csv"
+df <- read_csv(file=data_path)
+names(df) <- tolower(names(df)) # convert column names to lowercase
+names(df) <- gsub(" ","_", names(df)) # replacing space with underscores
+df
+
+# adding factor levels to relevant columns
+df_analysis <- data.frame(
+  coping_struggles = factor(df$coping_struggles, levels = c("No", "Yes")),
+  social_weakness = factor(df$social_weakness, levels = c("No", "Maybe", "Yes")),
+  work_interest = factor(df$work_interest, levels = c("No", "Yes")),
+  occupation = df$occupation,
+  self_employed = df$self_employed
+)
+
+# converting factors to numeric to find correlation
+df_numeric <- data.frame(
+  coping_struggles = ifelse(df$coping_struggles == "Yes", 1, 0),
+  social_weakness = case_when(
+    df$social_weakness == "Yes" ~ 2,
+    df$social_weakness == "Maybe" ~ 1,
+    df$social_weakness == "No" ~ 0),
+  work_interest = ifelse(df$work_interest == "Yes", 1, 0)
+)
+
+# correlation matrix
+cor_matrix <- cor(df_numeric, use="complete.obs")
+
+# correlation plot
+
+corrplot(cor_matrix, method = "color", type = "upper", 
+         addCoef.col = "black", tl.col = "black",
+         title = "Correlation between Mental Health Factors")
+
+# Analysis by occupation and self-employment
+summary_stats <- df %>%
+  group_by(occupation, self_employed) %>%
+  summarise(n = n(),
+            coping_yes = mean(coping_struggles == "Yes", na.rm = TRUE),
+            social_weakness_high = mean(social_weakness %in% c("Yes", "Maybe"),
+                                        na.rm = TRUE),
+            work_interest_yes = mean(work_interest == "Yes", na.rm = TRUE),
+            .groups = 'drop'
+            )
+
+# Print summary statistics
+cat("\nSummary Statistics by Occupation and Self-Employment Status:\n")
+print(summary_stats)
+
+# Additional analysis
+cat("\nDistributions:\n")
+cat("\nCoping Struggles:\n")
+print(table(df$coping_struggles))
+cat("\nSocial Weakness:\n")
+print(table(df$social_weakness))
+cat("\nWork Interest:\n")
+print(table(df$work_interest))
+```
