@@ -57,15 +57,16 @@ world_data <- world %>%
 # Plot the map
 ggplot(data = world_data) +
   geom_sf(aes(fill = diagnosed_rate), color = "white", size = 0.1) +
-  scale_fill_viridis_c(
+  scale_fill_gradient(
     name = "Diagnosed Rate",
-    na.value = "gray80"
+    low = "#D1AE82FF",  # Starting color
+    high = "#5D3A9B", # Ending color
+    na.value = "gray80"  # Color for missing data
   ) +
   labs(
     title = "Distribution of Diagnosed Cases by Country",
     subtitle = "Proportion of diagnosed individuals across surveyed countries"
   ) +
-  theme_minimal() +
   theme(
     legend.position = "bottom",
     legend.key.width = unit(3, "cm"),
@@ -75,6 +76,8 @@ ggplot(data = world_data) +
     panel.background = element_rect(fill = "lightblue")
   ) +
   guides(fill = guide_colorbar(title.position = "top", title.hjust = 0.5))
+
+ggsave("country_diagnosis.png", dpi = 350, path = "plots")
 ```
 
 # Distribution of Cases by Occupation
@@ -88,7 +91,7 @@ occupation_distribution <- data_clean %>%
 
 # Plot the multiset bar chart
 ggplot(occupation_distribution, aes(x = occupation, y = count, fill = diagnosed_label)) +
-  geom_bar(stat = "identity", position = "dodge", color = "black") +
+  geom_bar(stat = "identity", position = "dodge") +
   geom_text(
     aes(label = round(count, 1)), 
     position = position_dodge(width = 0.9), 
@@ -101,11 +104,12 @@ ggplot(occupation_distribution, aes(x = occupation, y = count, fill = diagnosed_
     y = "Count",
     fill = "Diagnosed"
   ) +
-  theme_minimal() +
-  scale_fill_manual(values = c("Yes" = "skyblue", "No" = "lightgray")) +
+  scale_fill_manual(values = c("Yes" = "#D1AE82FF", "No" = "#5D3A9B")) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
+
+ggsave("occupation.png", dpi = 350, path = "plots")
 ```
 
 # Distribution of Cases by Days Spent Indoors
@@ -119,7 +123,7 @@ indoors_distribution <- data_clean %>%
 
 # Plot the multiset bar chart
 ggplot(indoors_distribution, aes(x = days_indoors, y = count, fill = diagnosed_label)) +
-  geom_bar(stat = "identity", position = "dodge", color = "black") +
+  geom_bar(stat = "identity", position = "dodge") +
   geom_text(
     aes(label = round(count, 1)), 
     position = position_dodge(width = 0.9), 
@@ -127,16 +131,17 @@ ggplot(indoors_distribution, aes(x = days_indoors, y = count, fill = diagnosed_l
     size = 3
   ) +
   labs(
-    title = "Distribution of Diagnosed by Occupation",
-    x = "Occupation",
+    title = "Distribution of Diagnosed by Days Indoor",
+    x = "Days Indoor",
     y = "Count",
     fill = "Diagnosed"
   ) +
-  theme_minimal() +
-  scale_fill_manual(values = c("Yes" = "skyblue", "No" = "lightgray")) +
+  scale_fill_manual(values = c("Yes" = "#D1AE82FF", "No" = "#5D3A9B")) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
+
+ggsave("days_indoor.png", dpi = 350, path = "plots")
 ```
 
 
@@ -208,18 +213,4 @@ confusionMatrix(as.factor(logistic_data$predicted_class), logistic_data$diagnose
 roc_curve <- roc(logistic_data$diagnosed, logistic_data$predicted_prob)
 plot(roc_curve)
 auc(roc_curve)
-```
-# Country over time graph
-
-```{r}
-country_over_time <- data_clean %>%
-    mutate(record_date = floor_date(timestamp, unit = "month")) %>%
-  filter(., diagnosed == 1) %>%
-  group_by(record_date, country) %>%
-  summarise(count = n(), .groups = "drop")
-
-ggplot(country_over_time, aes(x = record_date, y = count, group = country, color = country)) +
-    geom_line() +
-    geom_point()
-
 ```
