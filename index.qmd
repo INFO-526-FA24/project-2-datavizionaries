@@ -89,6 +89,10 @@ df_selected <- data.frame(
 # Calculate correlation matrix
 cor_matrix <- cor(df_selected, use = "complete.obs")
 
+# Rename variables for multi-line labels  
+colnames(cor_matrix) <- c("Coping\nStruggles", "Social\nWeakness", "Work\nInterest", "Self\nEmployed")  
+rownames(cor_matrix) <- c("Coping\nStruggles", "Social\nWeakness", "Work\nInterest", "Self\nEmployed") 
+
 # Melt the correlation matrix for ggplot
 cor_melted <- reshape2::melt(cor_matrix)
 
@@ -110,7 +114,7 @@ cor_plot <- ggplot(cor_melted, aes(x = Var1, y = Var2, fill = value)) +
   theme_minimal() +
   theme(
     #axis.text.x = element_text(hjust = 1, size = 10, angle=90),
-    axis.text.x = element_blank(),
+    axis.text.x = element_text(size=10),
     axis.text.y = element_text(size = 10),
     axis.title = element_blank(),
     panel.grid.major = element_blank(),
