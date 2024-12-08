@@ -109,7 +109,8 @@ cor_plot <- ggplot(cor_melted, aes(x = Var1, y = Var2, fill = value)) +
   scale_fill_gradient(low = "#c8ac7d", high = "#555ba5")+
   theme_minimal() +
   theme(
-    axis.text.x = element_text(hjust = 1, size = 10, angle=90),
+    #axis.text.x = element_text(hjust = 1, size = 10, angle=90),
+    axis.text.x = element_blank(),
     axis.text.y = element_text(size = 10),
     axis.title = element_blank(),
     panel.grid.major = element_blank(),
@@ -126,7 +127,7 @@ cor_plot <- ggplot(cor_melted, aes(x = Var1, y = Var2, fill = value)) +
 print(cor_plot)
 
 # Save the plot
-ggsave("./images/selected_correlations.png", cor_plot, 
+ggsave("./images/new_selected_correlations.png", cor_plot, 
        width = 8, height = 6, dpi = 500)
 ```
 
