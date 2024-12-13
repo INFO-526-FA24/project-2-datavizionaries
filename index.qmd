@@ -55,6 +55,7 @@ data <- sample_n(data, 200)
 ## Question 1
 
 ### How family history affect mental health
+
 Does a person's or their family's history of mental health problems link with higher levels of mood swings, coping challenges and social fragility?
 
 ```{r}
@@ -79,6 +80,7 @@ summary_data <- select(sample_n(data, 200), Mood_Swings, Gender, family_history)
 
 mood_swings <- ggplot(summary_data, aes(x = Gender, y = Average_Mood_Swings, fill = family_history)) +
   geom_bar(stat = "identity", position = "dodge") +
+  coord_flip() +
   scale_fill_manual(values = c("Yes" = "#ccad80", "No" = "#535aa3")) +
   labs(
     title = "Mood Swings",
@@ -88,7 +90,6 @@ mood_swings <- ggplot(summary_data, aes(x = Gender, y = Average_Mood_Swings, fil
   ) +
   theme_minimal()
 ```
-
 
 ```{r}
 #| label: q1-1
@@ -100,6 +101,7 @@ summary_data <- data %>%
 
 coping_struggles <- ggplot(summary_data, aes(x = Gender, y = Average_Coping_Struggles, fill = family_history)) +
   geom_bar(stat = "identity", position = "dodge") +
+  coord_flip() +
   scale_fill_manual(values = c("Yes" = "#ccad80", "No" = "#535aa3")) +
   labs(
     title = "Coping Struggles",
@@ -120,6 +122,7 @@ summary_data <- data %>%
 
 social_weakness <- ggplot(summary_data, aes(x = Gender, y = Average_Social_Weakness, fill = family_history)) +
   geom_bar(stat = "identity", position = "dodge") +
+  coord_flip() +
   scale_fill_manual(values = c("Yes" = "#ccad80", "No" = "#535aa3")) +
   labs(
     title = "Social Weakness",
@@ -140,6 +143,7 @@ summary_data <- data %>%
 
 work_interest <- ggplot(summary_data, aes(x = Gender, y = Average_Work_Interest, fill = family_history)) +
   geom_bar(stat = "identity", position = "dodge") +
+  coord_flip() +
   scale_fill_manual(values = c("Yes" = "#ccad80", "No" = "#535aa3")) +
   labs(
     title = "Work Interest",
@@ -150,7 +154,6 @@ work_interest <- ggplot(summary_data, aes(x = Gender, y = Average_Work_Interest,
   theme_minimal()
 ```
 
-
 ```{r}
 #| label: q1-4
 #| include: true
@@ -160,7 +163,9 @@ print(combined_plot)
 ```
 
 ```{r}
-#| label: q1-4
+
+#| label: q1-4 
 #| include: true
 
 ggsave("combined_plot.png", dpi=500)
+```
