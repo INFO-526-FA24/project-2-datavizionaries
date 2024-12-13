@@ -1,11 +1,171 @@
 ---
-title: "Project title"
-subtitle: "INFO 526 - Project 1"
-author: "Team name"
-format: html
+title: "MindScope: Unveiling Patterns in Mental Health through Data-Driven Insights"
+subtitle: ""
+author: 
+  - name: "Team Data Vizionaries"
+    affiliations:
+      - name: "College of Information Science, University of Arizona"
+description: "Project 2 for INFO 526 course instructed by Prof. Anna Leach"
+format:
+  html:
+    code-tools: true
+    code-overflow: wrap
+    code-line-numbers: false
+    embed-resources: true
 editor: visual
+code-annotations: hover
+execute:
+  warning: false
 ---
+
+```{r}
+#| label: load-packages
+#| include: true
+
+pacman::p_load(tidymodels, dplyr, readr, tidyverse, here, patchwork,
+               readxl, ggplot2, ggimage, GGally, viridis, reshape2, kableExtra)
+
+```
 
 ## Abstract
 
-Add project abstract here.
+We explore global mental health. There is never too much awareness on a vital topic like this.
+
+## Loading data
+
+```{r}
+#| label: load-data
+#| include: true
+
+data <- read.csv("data/mental_health.csv")
+
+encode_ordinal <- function(x, order = unique(x)) {
+  x <- as.numeric(factor(x, levels = order, exclude = NULL))
+  x
+}
+
+data$Mood_Swings <- encode_ordinal(data$Mood_Swings, order = c("Low", "Medium", "High"))
+data$Coping_Struggles <- encode_ordinal(data$Coping_Struggles, order = c("No", "Maybe", "Yes"))
+data$Social_Weakness <- encode_ordinal(data$Social_Weakness, order = c("No", "Maybe", "Yes"))
+data$Work_Interest <- encode_ordinal(data$Work_Interest, order = c("No", "Maybe", "Yes"))
+
+data <- sample_n(data, 200)
+```
+
+## Question 1
+
+### How family history affect mental health
+
+Does a person's or their family's history of mental health problems link with higher levels of mood swings, coping challenges and social fragility?
+
+```{r}
+#| label: random-data
+#| include: true
+
+# random data for testing, to be removed
+set.seed(1)
+random_data <- data.frame(
+  Mood_Swings = sample(1:3, 100, replace = TRUE),
+  Gender = sample(c("Female", "Male"), 100, replace = TRUE),
+  family_history = sample(c("Yes", "No"), 100, replace = TRUE))
+```
+
+```{r}
+#| label: q1
+#| include: true
+
+summary_data <- select(sample_n(data, 200), Mood_Swings, Gender, family_history) %>%
+  group_by(Gender, family_history) %>%
+  summarise(Average_Mood_Swings = mean(Mood_Swings), .groups = "drop")
+
+mood_swings <- ggplot(summary_data, aes(x = Gender, y = Average_Mood_Swings, fill = family_history)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  coord_flip() +
+  scale_fill_manual(values = c("Yes" = "#ccad80", "No" = "#535aa3")) +
+  labs(
+    title = "Mood Swings",
+    x = "Gender",
+    y = "Mood Swings",
+    fill = "Family History"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: q1-1
+#| include: true
+
+summary_data <- data %>%
+  group_by(Gender, family_history) %>%
+  summarise(Average_Coping_Struggles = mean(Coping_Struggles), .groups = "drop")
+
+coping_struggles <- ggplot(summary_data, aes(x = Gender, y = Average_Coping_Struggles, fill = family_history)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  coord_flip() +
+  scale_fill_manual(values = c("Yes" = "#ccad80", "No" = "#535aa3")) +
+  labs(
+    title = "Coping Struggles",
+    x = "Gender",
+    y = "Coping Struggles",
+    fill = "Family History"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: q1-2
+#| include: true
+
+summary_data <- data %>%
+  group_by(Gender, family_history) %>%
+  summarise(Average_Social_Weakness = mean(Social_Weakness), .groups = "drop")
+
+social_weakness <- ggplot(summary_data, aes(x = Gender, y = Average_Social_Weakness, fill = family_history)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  coord_flip() +
+  scale_fill_manual(values = c("Yes" = "#ccad80", "No" = "#535aa3")) +
+  labs(
+    title = "Social Weakness",
+    x = "Gender",
+    y = "Social Weakness",
+    fill = "Family History"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: q1-3
+#| include: true
+
+summary_data <- data %>%
+  group_by(Gender, family_history) %>%
+  summarise(Average_Work_Interest = mean(Work_Interest), .groups = "drop")
+
+work_interest <- ggplot(summary_data, aes(x = Gender, y = Average_Work_Interest, fill = family_history)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  coord_flip() +
+  scale_fill_manual(values = c("Yes" = "#ccad80", "No" = "#535aa3")) +
+  labs(
+    title = "Work Interest",
+    x = "Gender",
+    y = "Work Interest",
+    fill = "Family History"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: q1-4
+#| include: true
+
+combined_plot <- (mood_swings + coping_struggles) / (work_interest + social_weakness)
+print(combined_plot)
+```
+
+```{r}
+
+#| label: q1-4 
+#| include: true
+
+ggsave("combined_plot.png", dpi=500)
+```
