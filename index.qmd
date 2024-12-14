@@ -31,6 +31,14 @@ pacman::p_load(tidymodels, dplyr, readr, tidyverse, here, patchwork,
 
 We explore global mental health. There is never too much awareness on a vital topic like this.
 
+## Introduction
+
+::: {style="text-align: justify;"}
+This project uses the ‘Mental Health Dataset’ sourced from Kaggle. It was prepared by Mr Bhavik Jikdara by extracting the required information from `<a href="`{=html}<https://ourworldindata.org/mental-health/>`" target="_blank">`{=html}Our World in Data</a> . The dataset contains a variety of features related to text analysis, psychological indicators, stress, isolation and behavioral attributes making it suitable to visualize and get insights into mental health. The data covers the time period between August 2014 and February 2016.
+
+The dataset has a total of 17 columns: 1 datetime and 16 categorical variables. The categorical columns: Gender, Country, Occupation, self_employed, family_history, treatment, Days_Indoors, Growing_Stress, Changes_Habits, Mental_Health_History, Mood_Swings, Coping_Struggles, Work_Interest, Social_Weakness, mental_health_interview, care_options and the datetime column: Timestamp are both represented by the character data type in R. The dataset has 292364 entries and 17 columns indicating it has a dimension of 292364 x 17. The description of the columns is as follows:
+:::
+
 ## Loading data
 
 ```{r}
@@ -51,6 +59,26 @@ data$Work_Interest <- encode_ordinal(data$Work_Interest, order = c("No", "Maybe"
 
 data <- sample_n(data, 200)
 ```
+
+| **Column Name** | **Class** | **Description** |
+|------------------------|------------------------|------------------------|
+| Timestamp | character(datetime) | The timestamp at which an observation was recorded |
+| Gender | character | Gender of the person(Male or Female) |
+| Country | character | Country to which the person belongs to |
+| Occupation | character | The occupation of the person |
+| self_employed | character | Indicates whether the person works from themselves, has their own business(Yes or No) |
+| family_history | character | History of mental health issues among family members(Yes or No) |
+| treatment | character | Indicates whether a person is taking treatment for mental health issues. (Yes or No) |
+| Days_Indoor | character |  |
+| Growing_Stress | character | Indicates whether a person's stress level is increasing over time. (Yes or No) |
+| Changes_Habits | character | It refers to changes in behavior or habits that may indicate shifts in mental health. |
+| Mental_Health_History | character | Person’s mental health history |
+| Mood_Swings | character | Fluctuations in a person's mood |
+| Coping_Struggles | character | Difficulties a person may have in coping with mental health challenges. |
+| Work_Interest | character | Indicates whether interested in doing work or not |
+| Social_Weakness | character | Indicates difficulties in social interactions or relationships |
+| mental_health_interview | character | Indicates whether the person would bring up the issue of mental health with potential employer in an interview |
+| care_options | character | Indicates whether options are available for treatment of mental health issues, such as therapy, medication, or support groups. |
 
 ## Question 1
 
