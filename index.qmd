@@ -31,7 +31,7 @@ The dataset has a total of 17 columns: 1 datetime and 16 categorical variables. 
 :::
 
 | **Column Name** | **Class** | **Description** |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | Timestamp | character(datetime) | The timestamp at which an observation was recorded |
 | Gender | character | Gender of the person(Male or Female) |
 | Country | character | Country to which the person belongs to |
@@ -166,8 +166,7 @@ cor_plot <- ggplot(cor_melted, aes(x = Var1, y = Var2, fill = value)) +
 (cor_plot)
 
 # Save the plot
-# ggsave("./images/new_selected_correlations.png", cor_plot, 
-#        width = 8, height = 6, dpi = 500)
+ggsave("new_selected_correlations.png", cor_plot, width = 8, height = 6, dpi = 500, path = "plots")
 ```
 
 #### Plot 1-b
@@ -201,8 +200,6 @@ coping_struggles <- ggplot(summary_data, aes(x = Gender, y = Average_Coping_Stru
     fill = "Family History"
   ) +
   theme_minimal()
-
-coping_struggles
 ```
 
 #### Plot 1-c
@@ -226,8 +223,6 @@ social_weakness <- ggplot(summary_data, aes(x = Gender, y = Average_Social_Weakn
     fill = "Family History"
   ) +
   theme_minimal()
-
-social_weakness
 ```
 
 #### Plot 1-d
@@ -250,14 +245,13 @@ work_interest <- ggplot(summary_data, aes(x = Gender, y = Average_Work_Interest,
     fill = "Family History"
   ) +
   theme_minimal()
-
-work_interest
 ```
 
 #### Plot 1-e
 
 ```{r}
 #| include: true
+
 summary_data <- data %>%
   group_by(Gender, family_history) %>%
   summarise(Average_Mood_Swings = mean(Mood_Swings), .groups = "drop")
@@ -273,30 +267,199 @@ mood_swings <- ggplot(summary_data, aes(x = Gender, y = Average_Mood_Swings, fil
     fill = "Family History"
   ) +
   theme_minimal()
-mood_swings
 ```
 
 #### Plot 1-f
 
 ```{r}
 combined_plot <- (mood_swings + coping_struggles) / (work_interest + social_weakness)
-combined_plot
 ```
 
 ### Discussion
 
-<div style="text-align:justify;">
-
+::: {style="text-align:justify;"}
 The image shows a correlation matrix heatmap between the four mental-health related variables: coping_struggles, social_weakness, work_interest and self_employed. The matrix uses a color schema ranging from yellow(1.0) to teal(0). Looking at the specific correlations, we can observe that each variable has perfect positive correlation(1.00) with itself, shown in yellow along the diagonal. However, the relationship between different variables is significantly weak or non-existent with values very close to zero. For instance, work_interest and social_weakness show a very slight negative correlation of -0.05, while coping_struggles and social_weakness have a minimal positive correlation of 0.01. The variable self-employed shows no correlation with any other factors. These observations indicate that these mental health factors are independent of each other.
 
 Here we look at different aspects of life that may be affected by mental health. Our main goal is to see how much and in what ways family history of mental illness influences our mood, ability to cope, social interactions and our passion for work.Family history of mental illness seems to make mood swings less intensive, at least in women. There is no significant effect for male population.When it comes to coping abilities, the data indicates that women struggle more, but family history has virtually no effect on how well people can cope.When it comes to work, women again seem more sensitive to family history: in families with a history of mental illness women have more interest in work, whereas men not so much.Finally, social skills seem to be the very little affected by the history of mental illness, and there is also only a negligible difference between men and women.
-
-</div>
+:::
 
 ## Question 2: What is the distribution of mental health treatment-seeking across different demographics (e.g., gender, country, occupation)? Also, are there trends seen over time (based on Timestamp), such as increasing stress levels or changes in treatment-seeking behaviors?
 
 ### Approach
 
+::: {style="text-align: justify;"}
+The analytical approach for this project consists of three key phases: data preprocessing, exploratory data analysis (EDA), and visualization. These phases are designed to derive meaningful insights from the data and effectively communicate our findings.
+
+The preprocessing phase will focus on preparing the data for analysis. Here, we have recorded the value "Housewife" in the "occupation" column as "Homemaker." Since we also have males in the dataset who help at home, it's only fair to be respectful of the available genders. Moreover, the timestamps available in the dataset will also be parsed using Lubridate to help with the analysis.
+
+EDA will focus on identifying relationships and patterns within the data.
+
+1.  Country-Level Analysis: Examine the distribution of mental health diagnosis rates across countries to identify regions with higher prevalence. This analysis will be complemented by a choropleth map that visually highlights these differences.
+
+2.  Days Indoor vs. Diagnosed: Investigate the relationship between the number of days spent indoors and the proportion of individuals diagnosed with mental health issues. Bar plots will be used to compare distributions.
+
+3.  Occupation vs. Diagnosed: Analyze how mental health diagnoses are distributed across different occupational categories. This will help uncover patterns related to specific types of work environments and mental health challenges.
+
+To effectively communicate the findings, a series of tailored visualizations will be created:
+
+1.  Choropleth Map: A world map illustrating the Diagnosed Rate across surveyed countries. The map will highlight variations with a custom gradient color scheme, making regional differences visually intuitive.
+
+2.  Stacked Bar Charts: Stacked bar plots will be generated to show how diagnoses are distributed based on Days Indoor and Occupation, emphasizing comparisons between groups.
+
+3.  Proportional Comparisons: Additional bar plots will compare diagnoses across specific groups, such as occupations or indoor activity patterns.
+:::
+
 ### Analysis
 
+```{r}
+library(tidyverse)
+library(janitor)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(caret)
+library(pROC)
+
+# Reading dataset
+
+data <- read.csv("data/mental_health.csv", header = TRUE)
+
+# Clean data
+data_clean <- data %>% 
+  mutate(
+    Timestamp = parse_date_time(
+      Timestamp, orders = "mdy HM"
+    ),
+    diagnosed = ifelse(treatment == "Yes", 1, 0),
+    Occupation = ifelse(Occupation == "Housewife", "Homemaker", Occupation)
+  ) %>% within(., rm(treatment)) %>%
+  filter(self_employed != "") %>%
+  clean_names()
+```
+
+#### Country Plot
+
+```{r}
+#| include: true
+
+country_distribution <- data_clean %>%
+  group_by(country) %>%
+  summarise(
+    count = n(),
+    diagnosed_rate = mean(diagnosed)
+  )
+
+# Load a world map
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+# Join the summarized data with the world map
+world_data <- world %>%
+  left_join(country_distribution, by = c("name_long" = "country")) %>%
+  filter(., name_long != "Antarctica")
+
+# Plot the map
+ggplot(data = world_data) +
+  geom_sf(aes(fill = diagnosed_rate), color = "white", size = 0.1) +
+  scale_fill_gradient(
+    name = "Diagnosed Rate",
+    low = "#D1AE82FF",  # Starting color
+    high = "#5D3A9B", # Ending color
+    na.value = "gray80"  # Color for missing data
+  ) +
+  labs(
+    title = "Distribution of Diagnosed Cases by Country",
+    subtitle = "Proportion of diagnosed individuals across surveyed countries"
+  ) +
+  theme(
+    legend.position = "bottom",
+    legend.key.width = unit(3, "cm"),
+    legend.key.height = unit(0.5, "cm"),
+    legend.text = element_text(size = 10),
+    legend.title = element_text(size = 12, face = "bold"),
+    panel.background = element_rect(fill = "lightblue")
+  ) +
+  guides(fill = guide_colorbar(title.position = "top", title.hjust = 0.5))
+
+ggsave("country_diagnosis.png", dpi = 350, path = "plots")
+```
+
+#### Occupation
+
+```{r}
+#| include: true
+
+# Summarize the data
+occupation_distribution <- data_clean %>%
+  group_by(occupation, diagnosed) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  mutate(diagnosed_label = ifelse(diagnosed == 1, "Yes", "No"))
+
+# Plot the multiset bar chart
+ggplot(occupation_distribution, aes(x = occupation, y = count, fill = diagnosed_label)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(
+    aes(label = round(count, 1)), 
+    position = position_dodge(width = 0.9), 
+    vjust = -0.5, 
+    size = 3
+  ) +
+  labs(
+    title = "Distribution of Diagnosed by Occupation",
+    x = "Occupation",
+    y = "Count",
+    fill = "Diagnosed"
+  ) +
+  scale_fill_manual(values = c("Yes" = "#D1AE82FF", "No" = "#5D3A9B")) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+ggsave("occupation.png", dpi = 350, path = "plots")
+```
+
+#### Days Indoor
+
+```{r}
+#| include: true
+
+# Summarize the data
+indoors_distribution <- data_clean %>%
+  group_by(days_indoors, diagnosed) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  mutate(diagnosed_label = ifelse(diagnosed == 1, "Yes", "No"))
+
+# Plot the multiset bar chart
+ggplot(indoors_distribution, aes(x = days_indoors, y = count, fill = diagnosed_label)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(
+    aes(label = round(count, 1)), 
+    position = position_dodge(width = 0.9), 
+    vjust = -0.5, 
+    size = 3
+  ) +
+  labs(
+    title = "Distribution of Diagnosed by Days Indoor",
+    x = "Days Indoor",
+    y = "Count",
+    fill = "Diagnosed"
+  ) +
+  scale_fill_manual(values = c("Yes" = "#D1AE82FF", "No" = "#5D3A9B")) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+ggsave("days_indoor.png", dpi = 350, path = "plots")
+```
+
 ### Discussion
+
+::: {style="text-align:justify;"}
+Occupation may play a role in diagnosis outcomes. For example, homemakers may report higher diagnosis rates due to increased stress, isolation, or lack of workplace mental health resources. The even distribution across "Corporate" and "Student" categories suggests that workplace or academic environments could affect diagnosis rates similarly.
+
+Higher diagnosed rates in certain countries could be attributed to:
+
+1.  Better access to mental health services and awareness campaigns.
+
+2.  Cultural differences in reporting or seeking help for mental health issues.
+
+3.  Lower diagnosed rates in some regions might be due to stigma, lack of resources, or under reporting.
+:::
