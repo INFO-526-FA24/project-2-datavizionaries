@@ -39,29 +39,8 @@ This project uses the ‘Mental Health Dataset’ sourced from Kaggle. It was pr
 The dataset has a total of 17 columns: 1 datetime and 16 categorical variables. The categorical columns: Gender, Country, Occupation, self_employed, family_history, treatment, Days_Indoors, Growing_Stress, Changes_Habits, Mental_Health_History, Mood_Swings, Coping_Struggles, Work_Interest, Social_Weakness, mental_health_interview, care_options and the datetime column: Timestamp are both represented by the character data type in R. The dataset has 292364 entries and 17 columns indicating it has a dimension of 292364 x 17. The description of the columns is as follows:
 :::
 
-## Loading data
-
-```{r}
-#| label: load-data
-#| include: true
-
-data <- read.csv("data/mental_health.csv")
-
-encode_ordinal <- function(x, order = unique(x)) {
-  x <- as.numeric(factor(x, levels = order, exclude = NULL))
-  x
-}
-
-data$Mood_Swings <- encode_ordinal(data$Mood_Swings, order = c("Low", "Medium", "High"))
-data$Coping_Struggles <- encode_ordinal(data$Coping_Struggles, order = c("No", "Maybe", "Yes"))
-data$Social_Weakness <- encode_ordinal(data$Social_Weakness, order = c("No", "Maybe", "Yes"))
-data$Work_Interest <- encode_ordinal(data$Work_Interest, order = c("No", "Maybe", "Yes"))
-
-data <- sample_n(data, 200)
-```
-
 | **Column Name** | **Class** | **Description** |
-|------------------------|------------------------|------------------------|
+|----|----|----|
 | Timestamp | character(datetime) | The timestamp at which an observation was recorded |
 | Gender | character | Gender of the person(Male or Female) |
 | Country | character | Country to which the person belongs to |
@@ -80,48 +59,145 @@ data <- sample_n(data, 200)
 | mental_health_interview | character | Indicates whether the person would bring up the issue of mental health with potential employer in an interview |
 | care_options | character | Indicates whether options are available for treatment of mental health issues, such as therapy, medication, or support groups. |
 
-## Question 1
+## Question 1: How family history affect mental health
 
-### How family history affect mental health
+<div style="text-align:justify;">
 
-Does a person's or their family's history of mental health problems link with higher levels of mood swings, coping challenges and social fragility?
+What correlations exist between coping difficulties, social weakness, and work interest in occupation and self-employment status? Does a person's or their family's history of mental health problems link with higher levels of mood swings, coping challenges and social fragility?
+
+</div>
+
+## Approach
+
+::: {style="text-align: justify;"}
+Few lines about how we approach this question
+:::
+
+## Analysis
 
 ```{r}
-#| label: random-data
-#| include: true
+# List of required packages
+required_packages <- c("tidyverse", "skimr", "readr", "dplyr", "countrycode", "patchwork", 
+                       "ggplot2", "ggiraph", "sf", "gganimate", "gridExtra","transformr","corrplot","tidyr","reshape2")
 
-# random data for testing, to be removed
-set.seed(1)
-random_data <- data.frame(
-  Mood_Swings = sample(1:3, 100, replace = TRUE),
-  Gender = sample(c("Female", "Male"), 100, replace = TRUE),
-  family_history = sample(c("Yes", "No"), 100, replace = TRUE))
+# Function to check if a package is installed; if not, install it
+install_if_missing <- function(pkg) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    message(paste("Installing package:", pkg))
+    install.packages(pkg, dependencies = TRUE)
+  } else {
+    message(paste("Package", pkg, "is already installed"))
+  }
+}
+
+# Apply the function to each package
+invisible(lapply(required_packages, install_if_missing))
+
+# Function to load all the required packages
+load_packages <- function(pkg_list) {
+  invisible(lapply(pkg_list, function(pkg) {
+    library(pkg, character.only = TRUE)
+  }))
+}
+
+load_packages(required_packages)
 ```
 
 ```{r}
-#| label: q1
-#| include: true
+# Load required libraries
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(reshape2)
+library(viridis)
 
-summary_data <- select(sample_n(data, 200), Mood_Swings, Gender, family_history) %>%
-  group_by(Gender, family_history) %>%
-  summarise(Average_Mood_Swings = mean(Mood_Swings), .groups = "drop")
+# Read the data
+df <- read_csv("./data/mental_health.csv")
 
-mood_swings <- ggplot(summary_data, aes(x = Gender, y = Average_Mood_Swings, fill = family_history)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  coord_flip() +
-  scale_fill_manual(values = c("Yes" = "#ccad80", "No" = "#535aa3")) +
-  labs(
-    title = "Mood Swings",
-    x = "Gender",
-    y = "Mood Swings",
-    fill = "Family History"
+# Convert column names to lowercase and replace spaces with underscores
+names(df) <- tolower(names(df))
+names(df) <- gsub(" ","_", names(df))
+
+# Create a smaller dataframe with just the four variables of interest
+df_selected <- data.frame(
+  coping_struggles = ifelse(df$coping_struggles == "Yes", 1, 0),
+  social_weakness = case_when(
+    df$social_weakness == "Yes" ~ 2,
+    df$social_weakness == "Maybe" ~ 1,
+    df$social_weakness == "No" ~ 0
+  ),
+  work_interest = ifelse(df$work_interest == "Yes", 1, 0),
+  self_employed = ifelse(df$self_employed == "Yes", 1, 0)
+)
+
+# Calculate correlation matrix
+cor_matrix <- cor(df_selected, use = "complete.obs")
+
+# Rename variables for multi-line labels  
+colnames(cor_matrix) <- c("Coping\nStruggles", "Social\nWeakness", "Work\nInterest", "Self\nEmployed")  
+rownames(cor_matrix) <- c("Coping\nStruggles", "Social\nWeakness", "Work\nInterest", "Self\nEmployed") 
+
+# Melt the correlation matrix for ggplot
+cor_melted <- reshape2::melt(cor_matrix)
+
+# Keep only upper triangle of the correlation matrix  
+cor_melted <- cor_melted[which(as.integer(cor_melted$Var1) <= as.integer(cor_melted$Var2)), ]  
+
+# Create correlation plot
+cor_plot <- ggplot(cor_melted, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile() +
+  geom_text(aes(label = sprintf("%.2f", value)), 
+            #color = ifelse(abs(cor_melted$value) > 0.5, "white", "black"), 
+            size = 4) +
+  # scale_fill_viridis(
+  #   option = "viridis",
+  #   limits = c(-1, 1),
+  #   name = "Correlation"
+  # ) +
+  scale_fill_gradient(low = "#c8ac7d", high = "#555ba5")+
+  theme_minimal() +
+  theme(
+    #axis.text.x = element_text(hjust = 1, size = 10, angle=90),
+    axis.text.x = element_text(size=10),
+    axis.text.y = element_text(size = 10),
+    axis.title = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    plot.title = element_text(hjust = 0.5, size = 14),
+    legend.title = element_blank(),
   ) +
-  theme_minimal()
+  ggtitle("Correlation Matrix of Mental Health Factors") +
+  coord_fixed()
+
+# Display the plot
+(cor_plot)
+
+# Save the plot
+ggsave("./images/new_selected_correlations.png", cor_plot, 
+       width = 8, height = 6, dpi = 500)
 ```
 
+<p style="text-align:justify">
+
+The image shows a correlation matrix heatmap between the four mental-health related variables: coping_struggles, social_weakness, work_interest and self_employed. The matrix uses a color schema ranging from yellow(1.0) to teal(0). Looking at the specific correlations, we can observe that each variable has perfect positive correlation(1.00) with itself, shown in yellow along the diagonal. However, the relationship between different variables is significantly weak or non-existent with values very close to zero. For instance, work_interest and social_weakness show a very slight negative correlation of -0.05, while coping_struggles and social_weakness have a minimal positive correlation of 0.01. The variable self-employed shows no correlation with any other factors. These observations indicate that these mental health factors are independent of each other.
+
+</p>
+
 ```{r}
-#| label: q1-1
-#| include: true
+
+data <- read.csv("data/mental_health.csv")
+
+encode_ordinal <- function(x, order = unique(x)) {
+  x <- as.numeric(factor(x, levels = order, exclude = NULL))
+  x
+}
+
+data$Mood_Swings <- encode_ordinal(data$Mood_Swings, order = c("Low", "Medium", "High"))
+data$Coping_Struggles <- encode_ordinal(data$Coping_Struggles, order = c("No", "Maybe", "Yes"))
+data$Social_Weakness <- encode_ordinal(data$Social_Weakness, order = c("No", "Maybe", "Yes"))
+data$Work_Interest <- encode_ordinal(data$Work_Interest, order = c("No", "Maybe", "Yes"))
 
 summary_data <- data %>%
   group_by(Gender, family_history) %>%
@@ -138,6 +214,8 @@ coping_struggles <- ggplot(summary_data, aes(x = Gender, y = Average_Coping_Stru
     fill = "Family History"
   ) +
   theme_minimal()
+
+coping_struggles
 ```
 
 ```{r}
@@ -159,6 +237,8 @@ social_weakness <- ggplot(summary_data, aes(x = Gender, y = Average_Social_Weakn
     fill = "Family History"
   ) +
   theme_minimal()
+
+social_weakness
 ```
 
 ```{r}
@@ -180,12 +260,28 @@ work_interest <- ggplot(summary_data, aes(x = Gender, y = Average_Work_Interest,
     fill = "Family History"
   ) +
   theme_minimal()
+
+work_interest
 ```
 
 ```{r}
 #| label: q1-4
 #| include: true
+summary_data <- data %>%
+  group_by(Gender, family_history) %>%
+  summarise(Average_Mood_Swings = mean(Mood_Swings), .groups = "drop")
 
+mood_swings <- ggplot(summary_data, aes(x = Gender, y = Average_Mood_Swings, fill = family_history)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  coord_flip() +
+  scale_fill_manual(values = c("Yes" = "#ccad80", "No" = "#535aa3")) +
+  labs(
+    title = "Mood Swings",
+    x = "Gender",
+    y = "Mood Swings",
+    fill = "Family History"
+  ) +
+  theme_minimal()
 combined_plot <- (mood_swings + coping_struggles) / (work_interest + social_weakness)
 print(combined_plot)
 ```
@@ -195,5 +291,5 @@ print(combined_plot)
 #| label: q1-4 
 #| include: true
 
-ggsave("combined_plot.png", dpi=500)
+ggsave("./images/combined_plot.png", dpi=500)
 ```
