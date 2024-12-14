@@ -18,15 +18,6 @@ execute:
   warning: false
 ---
 
-```{r}
-#| label: load-packages
-#| include: true
-
-pacman::p_load(tidymodels, dplyr, readr, tidyverse, here, patchwork,
-               readxl, ggplot2, ggimage, GGally, viridis, reshape2, kableExtra)
-
-```
-
 ## Abstract
 
 We explore global mental health. There is never too much awareness on a vital topic like this.
@@ -59,21 +50,19 @@ The dataset has a total of 17 columns: 1 datetime and 16 categorical variables. 
 | mental_health_interview | character | Indicates whether the person would bring up the issue of mental health with potential employer in an interview |
 | care_options | character | Indicates whether options are available for treatment of mental health issues, such as therapy, medication, or support groups. |
 
-## Question 1: How family history affect mental health
+## Question 1: What correlations exist between coping difficulties, social weakness, and work interest in occupation and self-employment status? Does a person's or their family's history of mental health problems link with higher levels of mood swings, coping challenges and social fragility?
 
-<div style="text-align:justify;">
-
-What correlations exist between coping difficulties, social weakness, and work interest in occupation and self-employment status? Does a person's or their family's history of mental health problems link with higher levels of mood swings, coping challenges and social fragility?
-
-</div>
-
-## Approach
+### Approach
 
 ::: {style="text-align: justify;"}
-Few lines about how we approach this question
+The initial phase of our analysis focuses on data preprocessing, where we will transform categorical variables including Coping_Struggles, Social_Weakness, Work_Interest, Occupation, and self_employed into factors. A crucial aspect of this phase involves handling missing values through a systematic approach. For features with minimal missing data (less than 5%), we'll apply mean or median imputation. When dealing with moderate levels of missing data (5-30%), we'll implement techniques such as imputation and removing. Features with substantial missing data (exceeding 30%) will be evaluated for their analytical significance and potentially removed if deemed non-essential.
+
+The second phase involves conducting Exploratory Data Analysis (EDA) to uncover patterns and relationships within the data. We will examine how Coping_Struggles, Social_Weakness, and Work_Interest are distributed across different Occupations and employment statuses. Additionally, we'll investigate the relationship between family mental health history and both Coping_Struggles and Social_Weakness to identify potential patterns or correlations.
+
+The final phase focuses on creating informative visualizations to effectively communicate our findings. We'll develop stacked bar plots to illustrate how coping struggles, social weakness, and work interest are distributed across different occupations and employment statuses. A heatmap will be created using dplyr and ggplot2 to display correlations between categorical variables. Lastly, we'll generate bar plots to compare the proportions of coping struggles and social weakness between self-employed and non-self-employed individuals, providing clear visual insights into these relationships.
 :::
 
-## Analysis
+### Analysis
 
 ```{r}
 # List of required packages
@@ -102,6 +91,8 @@ load_packages <- function(pkg_list) {
 
 load_packages(required_packages)
 ```
+
+#### Plot 1-a
 
 ```{r}
 # Load required libraries
@@ -175,15 +166,11 @@ cor_plot <- ggplot(cor_melted, aes(x = Var1, y = Var2, fill = value)) +
 (cor_plot)
 
 # Save the plot
-ggsave("./images/new_selected_correlations.png", cor_plot, 
-       width = 8, height = 6, dpi = 500)
+# ggsave("./images/new_selected_correlations.png", cor_plot, 
+#        width = 8, height = 6, dpi = 500)
 ```
 
-<p style="text-align:justify">
-
-The image shows a correlation matrix heatmap between the four mental-health related variables: coping_struggles, social_weakness, work_interest and self_employed. The matrix uses a color schema ranging from yellow(1.0) to teal(0). Looking at the specific correlations, we can observe that each variable has perfect positive correlation(1.00) with itself, shown in yellow along the diagonal. However, the relationship between different variables is significantly weak or non-existent with values very close to zero. For instance, work_interest and social_weakness show a very slight negative correlation of -0.05, while coping_struggles and social_weakness have a minimal positive correlation of 0.01. The variable self-employed shows no correlation with any other factors. These observations indicate that these mental health factors are independent of each other.
-
-</p>
+#### Plot 1-b
 
 ```{r}
 
@@ -218,8 +205,10 @@ coping_struggles <- ggplot(summary_data, aes(x = Gender, y = Average_Coping_Stru
 coping_struggles
 ```
 
+#### Plot 1-c
+
 ```{r}
-#| label: q1-2
+#| label: q1-c
 #| include: true
 
 summary_data <- data %>%
@@ -241,8 +230,9 @@ social_weakness <- ggplot(summary_data, aes(x = Gender, y = Average_Social_Weakn
 social_weakness
 ```
 
+#### Plot 1-d
+
 ```{r}
-#| label: q1-3
 #| include: true
 
 summary_data <- data %>%
@@ -264,8 +254,9 @@ work_interest <- ggplot(summary_data, aes(x = Gender, y = Average_Work_Interest,
 work_interest
 ```
 
+#### Plot 1-e
+
 ```{r}
-#| label: q1-4
 #| include: true
 summary_data <- data %>%
   group_by(Gender, family_history) %>%
@@ -282,14 +273,30 @@ mood_swings <- ggplot(summary_data, aes(x = Gender, y = Average_Mood_Swings, fil
     fill = "Family History"
   ) +
   theme_minimal()
-combined_plot <- (mood_swings + coping_struggles) / (work_interest + social_weakness)
-print(combined_plot)
+mood_swings
 ```
+
+#### Plot 1-f
 
 ```{r}
-
-#| label: q1-4 
-#| include: true
-
-ggsave("./images/combined_plot.png", dpi=500)
+combined_plot <- (mood_swings + coping_struggles) / (work_interest + social_weakness)
+combined_plot
 ```
+
+### Discussion
+
+<div style="text-align:justify;">
+
+The image shows a correlation matrix heatmap between the four mental-health related variables: coping_struggles, social_weakness, work_interest and self_employed. The matrix uses a color schema ranging from yellow(1.0) to teal(0). Looking at the specific correlations, we can observe that each variable has perfect positive correlation(1.00) with itself, shown in yellow along the diagonal. However, the relationship between different variables is significantly weak or non-existent with values very close to zero. For instance, work_interest and social_weakness show a very slight negative correlation of -0.05, while coping_struggles and social_weakness have a minimal positive correlation of 0.01. The variable self-employed shows no correlation with any other factors. These observations indicate that these mental health factors are independent of each other.
+
+Here we look at different aspects of life that may be affected by mental health. Our main goal is to see how much and in what ways family history of mental illness influences our mood, ability to cope, social interactions and our passion for work.Family history of mental illness seems to make mood swings less intensive, at least in women. There is no significant effect for male population.When it comes to coping abilities, the data indicates that women struggle more, but family history has virtually no effect on how well people can cope.When it comes to work, women again seem more sensitive to family history: in families with a history of mental illness women have more interest in work, whereas men not so much.Finally, social skills seem to be the very little affected by the history of mental illness, and there is also only a negligible difference between men and women.
+
+</div>
+
+## Question 2: What is the distribution of mental health treatment-seeking across different demographics (e.g., gender, country, occupation)? Also, are there trends seen over time (based on Timestamp), such as increasing stress levels or changes in treatment-seeking behaviors?
+
+### Approach
+
+### Analysis
+
+### Discussion
