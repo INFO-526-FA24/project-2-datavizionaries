@@ -50,16 +50,56 @@ The dataset has a total of 17 columns: 1 datetime and 16 categorical variables. 
 | mental_health_interview | character | Indicates whether the person would bring up the issue of mental health with potential employer in an interview |
 | care_options | character | Indicates whether options are available for treatment of mental health issues, such as therapy, medication, or support groups. |
 
-## Question 1: What correlations exist between coping difficulties, social weakness, and work interest in occupation and self-employment status? Does a person's or their family's history of mental health problems link with higher levels of mood swings, coping challenges and social fragility?
+## Question 1:
+
+## What correlations exist between coping difficulties, social weakness, and work interest in occupation and self-employment status? Does a person's or their family's history of mental health problems link with higher levels of mood swings, coping challenges and social fragility?
 
 ### Approach
 
 ::: {style="text-align: justify;"}
-The initial phase of our analysis focuses on data preprocessing, where we will transform categorical variables including Coping_Struggles, Social_Weakness, Work_Interest, Occupation, and self_employed into factors. A crucial aspect of this phase involves handling missing values through a systematic approach. For features with minimal missing data (less than 5%), we'll apply mean or median imputation. When dealing with moderate levels of missing data (5-30%), we'll implement techniques such as imputation and removing. Features with substantial missing data (exceeding 30%) will be evaluated for their analytical significance and potentially removed if deemed non-essential.
+---
+title: "Data Preprocessing, EDA, and Visualization Plan"
+---
 
-The second phase involves conducting Exploratory Data Analysis (EDA) to uncover patterns and relationships within the data. We will examine how Coping_Struggles, Social_Weakness, and Work_Interest are distributed across different Occupations and employment statuses. Additionally, we'll investigate the relationship between family mental health history and both Coping_Struggles and Social_Weakness to identify potential patterns or correlations.
+## Phase 1: Data Preprocessing
 
-The final phase focuses on creating informative visualizations to effectively communicate our findings. We'll develop stacked bar plots to illustrate how coping struggles, social weakness, and work interest are distributed across different occupations and employment statuses. A heatmap will be created using dplyr and ggplot2 to display correlations between categorical variables. Lastly, we'll generate bar plots to compare the proportions of coping struggles and social weakness between self-employed and non-self-employed individuals, providing clear visual insights into these relationships.
+The initial phase of our analysis focuses on **data preprocessing**, a critical step to prepare the data for further analysis and modeling. In this phase, we will handle various data transformation tasks, starting with **categorical variables**. These variables, such as `Coping_Struggles`, `Social_Weakness`, `Work_Interest`, `Occupation`, and `self_employed`, will be converted into **factors** to facilitate their use in statistical modeling. Factors represent categorical data in R and help us interpret relationships between categories more effectively.
+
+A key component of the preprocessing phase involves addressing **missing values**, which are common in real-world datasets. We'll apply a systematic approach to handle missingness:
+
+-   **Minimal missing data (\< 5%)**: For features where the proportion of missing values is small, we will use imputation techniques. The choice between mean and median imputation will depend on the distribution of the variable. For numeric features, if the distribution is approximately normal, we will use the **mean** to impute missing values. For skewed distributions, we will use the **median** to better reflect the central tendency of the data without being affected by extreme values.
+
+-   **Moderate missing data (5-30%)**: When the missing data falls within this range, we will explore two approaches. For some features, we might apply **multiple imputation**, where the missing values are predicted based on the relationships with other variables in the dataset. Alternatively, if the missing data is still manageable, we may choose to **remove** records that contain missing values. This decision will be made carefully to avoid losing too much data, especially when the missing values are distributed randomly rather than systematically.
+
+-   **Substantial missing data (\> 30%)**: Features with more than 30% missing data will be critically evaluated for their importance in the analysis. We will assess whether these features are essential for the analysis or if they can be safely removed. If a feature is determined to be highly important but suffers from significant missing data, we might explore advanced techniques such as **model-based imputation** or even investigate external datasets to supplement missing information.
+
+## Phase 2: Exploratory Data Analysis (EDA)
+
+The second phase of our analysis involves **Exploratory Data Analysis (EDA)**, a critical step in identifying underlying patterns, relationships, and anomalies in the data. EDA allows us to uncover insights that will guide our modeling decisions and improve our understanding of the dataset.
+
+During this phase, we will examine several key variables and their interactions:
+
+-   **Coping_Struggles, Social_Weakness, and Work_Interest**: These variables will be analyzed across different **Occupations** and **employment statuses** (e.g., self-employed vs. non-self-employed). We will explore whether certain occupations or employment types are associated with higher or lower levels of coping struggles, social weakness, or work interest. This analysis will help us understand if certain job types or employment conditions influence individuals' mental health and work-related challenges.
+
+-   **Family Mental Health History**: A significant relationship may exist between an individual’s **family mental health history** and their own coping struggles and social weakness. We will analyze this relationship to uncover any correlations or patterns. This analysis will provide insights into whether a family history of mental health issues increases the likelihood of experiencing similar challenges in coping or social interactions. The exploration of these relationships could reveal important psychological or environmental factors affecting individuals’ well-being.
+
+We will also use visual techniques such as **box plots** or **density plots** to investigate the distribution of these variables and to visually assess any differences across subgroups. These visual tools will help us spot trends, outliers, or potential issues in the data that require further attention.
+
+## Phase 3: Visualization and Communication of Findings
+
+The final phase of the analysis focuses on **creating informative visualizations** to communicate the findings from our data exploration and analysis clearly and effectively. Visualizations not only provide an intuitive understanding of the data but also serve as powerful tools for decision-making and storytelling.
+
+We will create several types of visualizations to summarize our key findings:
+
+-   **Stacked Bar Plots**: To illustrate how `Coping_Struggles`, `Social_Weakness`, and `Work_Interest` are distributed across different **Occupations** and **employment statuses**. These plots will display the proportions of individuals experiencing various levels of coping struggles, social weakness, or work interest within each occupation or employment category. The stacked bars will make it easy to compare categories within a single visualization, helping us identify trends and differences across occupations or employment statuses.
+
+-   **Heatmap of Correlations**: We will use **dplyr** and **ggplot2** to create a heatmap displaying the correlations between various **categorical variables**. This heatmap will help us identify patterns and associations between different factors, such as `Coping_Struggles`, `Social_Weakness`, `Work_Interest`, and employment categories. The use of color gradients in the heatmap will allow for an easy visual interpretation of the strength and direction of these relationships.
+
+-   **Bar Plots for Self-Employed vs. Non-Self-Employed**: We will generate bar plots to compare the proportions of individuals experiencing `Coping_Struggles` and `Social_Weakness` between **self-employed** and **non-self-employed** individuals. This comparison will provide a clear visual representation of whether employment status plays a significant role in the prevalence of these mental health challenges. We will also examine whether the work-related factors such as autonomy or job insecurity in self-employment correlate with higher levels of coping struggles or social weakness.
+
+By the end of this phase, we will have a comprehensive set of visualizations that not only summarize key aspects of the data but also highlight important relationships between variables. These visuals will be invaluable for communicating findings to stakeholders, supporting hypothesis testing, and guiding future analyses or interventions.
+
+------------------------------------------------------------------------
 :::
 
 ### Analysis
@@ -283,7 +323,9 @@ The image shows a correlation matrix heatmap between the four mental-health rela
 Here we look at different aspects of life that may be affected by mental health. Our main goal is to see how much and in what ways family history of mental illness influences our mood, ability to cope, social interactions and our passion for work.Family history of mental illness seems to make mood swings less intensive, at least in women. There is no significant effect for male population.When it comes to coping abilities, the data indicates that women struggle more, but family history has virtually no effect on how well people can cope.When it comes to work, women again seem more sensitive to family history: in families with a history of mental illness women have more interest in work, whereas men not so much.Finally, social skills seem to be the very little affected by the history of mental illness, and there is also only a negligible difference between men and women.
 :::
 
-## Question 2: What is the distribution of mental health treatment-seeking across different demographics (e.g., gender, country, occupation)? Also, are there trends seen over time (based on Timestamp), such as increasing stress levels or changes in treatment-seeking behaviors?
+## Question 2:
+
+## What is the distribution of mental health treatment-seeking across different demographics (e.g., gender, country, occupation)? Also, are there trends seen over time (based on Timestamp), such as increasing stress levels or changes in treatment-seeking behaviors?
 
 ### Approach
 
@@ -308,6 +350,16 @@ To effectively communicate the findings, a series of tailored visualizations wil
 
 3.  Proportional Comparisons: Additional bar plots will compare diagnoses across specific groups, such as occupations or indoor activity patterns.
 :::
+
+### Time Series Analysis Approach
+
+In the first phase, we apply **time series analysis** to examine the treatment rate over time. The `treatment_rate` data is transformed into a time series object (`ts_treatment`), where the starting year and month are derived from the dataset’s `Timestamp`, and the frequency is set to 12 to represent monthly data. We then decompose the time series into its **observed**, **trend**, **seasonal**, and **remainder** components using **STL decomposition** (`stl()`). This decomposition allows us to identify long-term trends, seasonal fluctuations, and random noise that may impact the treatment rate. The decomposition results are converted into a data frame, which is reshaped into a long format for easier plotting with **ggplot2**. The resulting graph, using `geom_line()`, displays each component separately, providing a clear visualization of how the treatment rate evolves over time, the underlying trends, periodic seasonality, and the residual noise. This approach helps identify critical patterns in the treatment rate and understand seasonal effects, contributing to more informed decision-making about healthcare interventions or resource allocation.
+
+### Confusion Matrix Evaluation Approach
+
+The second phase focuses on evaluating the **confusion matrix** of the classification model predicting whether individuals were diagnosed or not. First, we generate the confusion matrix using the `confusionMatrix()` function from the **caret** package, comparing predicted values (thresholded at 0.5) against the actual diagnoses. The confusion matrix is then converted into a data frame for easier manipulation and visualization. To present the matrix visually, a **heatmap** is created using **ggplot2**, where the frequencies of each prediction category (True Negatives, False Positives, False Negatives, and True Positives) are displayed as tiles. The color gradient is applied to represent the magnitude of counts, with textual labels added to enhance readability. This heatmap allows us to easily assess the performance of the classification model by visually highlighting areas of correct and incorrect predictions, helping identify potential improvements in model accuracy or areas where false positives or negatives might need further investigation.
+
+Together, these visualizations provide a comprehensive approach to understanding the treatment rate over time and the performance of the classification model, guiding decision-making and model refinement.
 
 ### Analysis
 
@@ -450,6 +502,129 @@ ggplot(indoors_distribution, aes(x = days_indoors, y = count, fill = diagnosed_l
 ggsave("days_indoor.png", dpi = 350, path = "plots")
 ```
 
+#### Time Series Decomposition
+
+```{r}
+
+library(tidyverse)
+library(janitor)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(caret)
+library(pROC)
+
+# Reading dataset
+
+data <- read.csv("data/mental_health.csv", header = TRUE)
+
+library(lubridate)
+
+# Convert Timestamp to date-time format
+data <- data %>%
+  mutate(Timestamp = mdy_hm(Timestamp),                 # Parse Timestamp
+         Occupation = ifelse(Occupation == "Housewife", "Homemaker", Occupation), # Rename Housewife
+         diagnosed = ifelse(treatment == "Yes", 1, 0))  # Create diagnosed column
+
+
+factor_columns <- c("Gender", "Country", "Occupation", "self_employed", 
+                    "family_history", "treatment", "Growing_Stress", 
+                    "Changes_Habits", "Mood_Swings", "Coping_Struggles", 
+                    "Work_Interest", "Social_Weakness", 
+                    "mental_health_interview", "care_options")
+
+data[factor_columns] <- lapply(data[factor_columns], as.factor)
+
+
+library(ggplot2)
+library(forecast)
+
+# Trends in Treatment Over Time
+treatment_trends <- data %>%
+  group_by(Timestamp) %>%
+  summarize(treatment_rate = mean(diagnosed, na.rm = TRUE))
+
+# Time Series Object for Treatment
+ts_treatment <- ts(treatment_trends$treatment_rate, 
+                   start = c(year(min(data$Timestamp)), month(min(data$Timestamp))), 
+                   frequency = 12)
+
+
+# Decompose the Time Series
+decomp <- stl(ts_treatment, s.window = "periodic")
+
+# Convert the decomposition to a data frame for ggplot
+decomp_df <- data.frame(
+  Time = time(ts_treatment),
+  Observed = ts_treatment,
+  Trend = decomp$time.series[, "trend"],
+  Seasonal = decomp$time.series[, "seasonal"],
+  Remainder = decomp$time.series[, "remainder"]
+)
+
+# Convert to long format for ggplot
+decomp_long <- reshape2::melt(decomp_df, id.vars = "Time", variable.name = "Component", value.name = "Value")
+
+# Plot using ggplot2
+ggplot(decomp_long, aes(x = Time, y = Value, color = Component)) +
+  geom_line(size = 0.55) +
+  facet_wrap(~Component, ncol = 1, scales = "free_y") +
+  scale_color_manual(values = c("Observed" = "black", "Trend" = "#555ba5", 
+                                "Seasonal" = "#c8ac7d", "Remainder" = "#a93925")) +
+  labs(
+    title = "Seasonal Decomposition of Treatment Rate",
+    x = "Time",
+    y = "Value"
+  ) +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(size = 12, face = "bold"),
+    legend.position = "none" # Remove legend for clarity
+  )
+
+```
+
+### Confusion Matrix HeatMap
+
+```{r}
+
+library(caret)
+
+# Remove rows with missing values
+data_clean <- data %>% drop_na(Gender, Country, Occupation, self_employed, family_history, diagnosed)
+
+# Logistic Regression Model
+logit_model <- glm(diagnosed ~ Gender + Country + Occupation + self_employed + family_history, 
+                   data = data_clean, family = binomial())
+
+# Predictive Performance
+pred <- predict(logit_model, type = "response")
+
+# Ensure the prediction and actual lengths match
+confusionMatrix(
+  as.factor(ifelse(pred > 0.5, 1, 0)), 
+  as.factor(data_clean$diagnosed)
+)
+
+# Generate confusion matrix
+conf_matrix <- confusionMatrix(as.factor(ifelse(pred > 0.5, 1, 0)), as.factor(data_clean$diagnosed))
+
+# Convert confusion matrix to a data frame
+conf_matrix_df <- as.data.frame(as.table(conf_matrix$table))
+
+# Plot confusion matrix as heatmap
+ggplot(conf_matrix_df, aes(x = Prediction, y = Reference, fill = Freq)) +
+  geom_tile() +
+  geom_text(aes(label = Freq), color = "white", size = 5) +
+  scale_fill_gradient(low = "#c8ac7d", high = "#555ba5") +
+  labs(
+    title = "Confusion Matrix Heatmap",
+    x = "Predicted",
+    y = "Actual"
+  ) +
+  theme_minimal()
+
+```
+
 ### Discussion
 
 ::: {style="text-align:justify;"}
@@ -462,4 +637,59 @@ Higher diagnosed rates in certain countries could be attributed to:
 2.  Cultural differences in reporting or seeking help for mental health issues.
 
 3.  Lower diagnosed rates in some regions might be due to stigma, lack of resources, or under reporting.
+:::
+
+### Time Series Decomposition Analysis
+
+::: {style="text-align:justify;"}
+The Time Series depicts a Seasonal Decomposition of Treatment Rate, with the components of the time series displayed over time: Observed, Trend, Seasonal, and Remainder. Here's an interpretation of each:
+
+### 1. Observed
+
+-   This is the raw time series data (treatment rate) as observed in the dataset. It shows how treatment rates vary over time, reflecting both systematic patterns and random fluctuations.
+
+### 2. Trend
+
+-   The trend component represents the long-term progression of the treatment rate.
+-   **Interpretation**: A rising or falling trend indicates an overall increase or decrease in treatment rates over the observed period. In this case, the trend shows periodic peaks and valleys, which may suggest external factors influencing the treatment rates cyclically.
+
+### 3. Seasonal
+
+-   The seasonal component captures repeating patterns or seasonality in the data.
+-   **Interpretation**: If the treatment rate is affected by cyclical factors (e.g., monthly or annual trends), this component isolates that pattern. In this plot, the seasonal component shows regular oscillations that could be related to calendar effects (e.g., specific months or times of the year when treatment rates rise or fall).
+
+### 4. Remainder
+
+-   The remainder (or residual) component reflects random noise or unexplained variability in the data after removing the trend and seasonal effects.
+-   **Interpretation**: The high frequency and irregularity in this component suggest that some variability in the treatment rates is due to factors not captured by the model (e.g., unexpected external events).
+
+## What This Means for the Dataset
+
+-   **Understanding trends**: If the treatment rates consistently increase or decrease, it could signal systematic changes in behavior, awareness, or external influences like policy changes.
+
+-   **Seasonality insights**: Regular fluctuations in the seasonal component suggest periodic factors (e.g., time of year or external events) driving treatment rates. Investigating these periods can help tailor interventions.
+
+-   **Noise assessment**: A high amount of variability in the remainder component indicates that some factors influencing treatment are unaccounted for and might require further investigation or data collection.
+
+This decomposition aids in better understanding the underlying patterns in the treatment rate data and can guide strategic decisions, such as identifying periods for targeted campaigns or understanding long-term trends.
+:::
+
+### Logistic Regression Insights and Heatmap Interpretation
+
+::: {style="text-align:justify;"}
+## Insights from Logistic Regression Coefficients
+
+-   **Gender**: Being male significantly reduces the likelihood of being diagnosed (negative coefficient with p \< 0.001).
+-   **Country**: Countries like India and Brazil show significantly lower odds of being diagnosed compared to the reference category.
+-   **Family History**: A strong positive association (highly significant, p \< 0.001) indicates that individuals with a family history are much more likely to be diagnosed.
+-   **Self-Employment**: Self-employed individuals have slightly higher odds of diagnosis.
+
+## Heatmap Interpretation
+
+The confusion matrix heatmap shows the counts for each category of the actual versus predicted values:
+
+-   **Top Left (True Negatives - TN)**: 112,942 cases were correctly predicted as negative (not diagnosed).
+-   **Top Right (False Positives - FP)**: 29,476 cases were incorrectly predicted as positive (diagnosed when they were not).
+-   **Bottom Left (False Negatives - FN)**: 58,644 cases were incorrectly predicted as negative (not diagnosed when they were).
+-   **Bottom Right (True Positives - TP)**: 86,100 cases were correctly predicted as positive (diagnosed).
 :::
