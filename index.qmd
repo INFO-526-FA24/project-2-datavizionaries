@@ -57,10 +57,6 @@ The dataset has a total of 17 columns: 1 datetime and 16 categorical variables. 
 ### Approach
 
 ::: {style="text-align: justify;"}
----
-title: "Data Preprocessing, EDA, and Visualization Plan"
----
-
 ## Phase 1: Data Preprocessing
 
 The initial phase of our analysis focuses on **data preprocessing**, a critical step to prepare the data for further analysis and modeling. In this phase, we will handle various data transformation tasks, starting with **categorical variables**. These variables, such as `Coping_Struggles`, `Social_Weakness`, `Work_Interest`, `Occupation`, and `self_employed`, will be converted into **factors** to facilitate their use in statistical modeling. Factors represent categorical data in R and help us interpret relationships between categories more effectively.
@@ -107,7 +103,9 @@ By the end of this phase, we will have a comprehensive set of visualizations tha
 ```{r}
 # List of required packages
 required_packages <- c("tidyverse", "skimr", "readr", "dplyr", "countrycode", "patchwork", 
-                       "ggplot2", "ggiraph", "sf", "gganimate", "gridExtra","transformr","corrplot","tidyr","reshape2")
+                       "ggplot2", "ggiraph", "sf", "gganimate", "gridExtra","transformr","corrplot","tidyr","reshape2","janitor","jpeg","rnaturalearth","rnaturalearthdata","caret",
+                      "pROC" )
+
 
 # Function to check if a package is installed; if not, install it
 install_if_missing <- function(pkg) {
@@ -240,6 +238,7 @@ coping_struggles <- ggplot(summary_data, aes(x = Gender, y = Average_Coping_Stru
     fill = "Family History"
   ) +
   theme_minimal()
+coping_struggles
 ```
 
 #### Plot 1-c
@@ -263,6 +262,7 @@ social_weakness <- ggplot(summary_data, aes(x = Gender, y = Average_Social_Weakn
     fill = "Family History"
   ) +
   theme_minimal()
+social_weakness
 ```
 
 #### Plot 1-d
@@ -285,6 +285,7 @@ work_interest <- ggplot(summary_data, aes(x = Gender, y = Average_Work_Interest,
     fill = "Family History"
   ) +
   theme_minimal()
+work_interest
 ```
 
 #### Plot 1-e
@@ -307,12 +308,14 @@ mood_swings <- ggplot(summary_data, aes(x = Gender, y = Average_Mood_Swings, fil
     fill = "Family History"
   ) +
   theme_minimal()
+mood_swings
 ```
 
 #### Plot 1-f
 
 ```{r}
 combined_plot <- (mood_swings + coping_struggles) / (work_interest + social_weakness)
+combined_plot
 ```
 
 ### Discussion
@@ -391,8 +394,13 @@ data_clean <- data %>%
 #### Country Plot
 
 ```{r}
+#| warning: false
 #| include: true
 
+
+# Load a world map
+world <- ne_countries(scale = "medium", returnclass = "sf")|>
+  st_set_crs(4326)
 country_distribution <- data_clean %>%
   group_by(country) %>%
   summarise(
@@ -400,16 +408,13 @@ country_distribution <- data_clean %>%
     diagnosed_rate = mean(diagnosed)
   )
 
-# Load a world map
-world <- ne_countries(scale = "medium", returnclass = "sf")
-
 # Join the summarized data with the world map
 world_data <- world %>%
   left_join(country_distribution, by = c("name_long" = "country")) %>%
   filter(., name_long != "Antarctica")
 
 # Plot the map
-ggplot(data = world_data) +
+heatmap <- ggplot(data = world_data) +
   geom_sf(aes(fill = diagnosed_rate), color = "white", size = 0.1) +
   scale_fill_gradient(
     name = "Diagnosed Rate",
@@ -431,7 +436,10 @@ ggplot(data = world_data) +
   ) +
   guides(fill = guide_colorbar(title.position = "top", title.hjust = 0.5))
 
-ggsave("country_diagnosis.png", dpi = 350, path = "plots")
+#ggsave("country_diagnosis.png", dpi = 350, path = "plots")
+img <- jpeg::readJPEG("./images/heatmap.jpeg")
+plot.new()
+rasterImage(img, 0, 0, 1,0.9)
 ```
 
 #### Occupation
